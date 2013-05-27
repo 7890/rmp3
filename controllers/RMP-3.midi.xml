@@ -1,0 +1,1094 @@
+<MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">
+
+<info>
+        <name>Reloop RMP-3</name>
+        <author>Thomas Brand</author>
+        <description>Bindings Reloop RMP-3 Cross Media Player</description>
+</info>
+
+    <controller id="RMP-3">
+        <scriptfiles>
+            <file functionprefix="RMP3" filename="Reloop-RMP-3-scripts.js"/>
+        </scriptfiles>
+        <controls>
+
+<!-- A play button down-->
+            <control>
+                <status>0x90</status>
+                <midino>0x1</midino>
+                <group>[Channel1]</group>
+ 		<key>RMP3.playTrack</key>
+                <description></description>
+		<options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- B play button down-->
+            <control>
+                <status>0x91</status>
+                <midino>0x1</midino>
+                <group>[Channel2]</group>
+ 		<key>RMP3.playTrack</key>
+                <description></description>
+		<options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- A cue button down -->
+            <control>
+                <status>0x90</status>
+                <midino>0x7</midino>
+                <group>[Channel1]</group>
+		<key>RMP3.Cue</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B cue button down -->
+            <control>
+                <status>0x91</status>
+                <midino>0x7</midino>
+                <group>[Channel2]</group>
+		<key>RMP3.Cue</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A bank p. -->
+            <control>
+                <status>0x90</status>
+                <midino>0x25</midino>
+                <group>[Playlist]</group>
+		<key>SelectPrevPlaylist</key>
+                <description></description>
+                <options>
+			 <normal/>
+                </options>
+            </control>
+
+<!-- B bank p. -->
+            <control>
+                <status>0x91</status>
+                <midino>0x25</midino>
+                <group>[Playlist]</group>
+		<key>SelectPrevPlaylist</key>
+                <description></description>
+                <options>
+			 <normal/>
+                </options>
+            </control>
+
+
+<!-- A sgl | ctn -->
+            <control>
+                <status>0x90</status>
+                <midino>0x1f</midino>
+                <group>[Playlist]</group>
+		<key>SelectNextPlaylist</key>
+                <description></description>
+                <options>
+			 <normal/>
+                </options>
+            </control>
+
+<!-- B sgl | ctn -->
+            <control>
+                <status>0x91</status>
+                <midino>0x1f</midino>
+                <group>[Playlist]</group>
+		<key>SelectNextPlaylist</key>
+                <description></description>
+                <options>
+			 <normal/>
+                </options>
+            </control>
+
+<!-- A time -->
+            <control>
+                <status>0x90</status>
+                <midino>0x19</midino>
+                <group>[Channel1]</group>
+		<key>start</key>
+                <description></description>
+                <options>
+			 <normal/>
+                </options>
+            </control>
+
+<!-- B time -->
+            <control>
+                <status>0x91</status>
+                <midino>0x19</midino>
+                <group>[Channel2]</group>
+		<key>start</key>
+                <description></description>
+                <options>
+			 <normal/>
+                </options>
+            </control>
+
+<!-- A rastered wheel track selection -->
+            <control>
+                <status>0xb0</status>
+                <midino>0x32</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.PrevNextWheel</key>
+                <description></description>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- B rastered wheel track selection -->
+            <control>
+                <status>0xb1</status>
+                <midino>0x32</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.PrevNextWheel</key>
+                <description></description>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- A outter jog wheel + shift -->
+            <control>
+                <status>0xb0</status>
+                <midino>0x74</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.JogZoom</key>
+                <description></description>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- B outter jog wheel + shift -->
+            <control>
+                <status>0xb1</status>
+                <midino>0x74</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.JogZoom</key>
+                <description></description>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- A rastered wheel track selection + shift = fast -->
+            <control>
+                <status>0xb0</status>
+                <midino>0x71</midino>
+                <group>[Playlist]</group>
+                <key>RMP3.PrevNextWheelShift</key>
+                <description></description>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- B rastered wheel track selection + shift = fast -->
+            <control>
+                <status>0xb1</status>
+                <midino>0x71</midino>
+                <group>[Playlist]</group>
+                <key>RMP3.PrevNextWheelShift</key>
+                <description></description>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- A rastered wheel press -->
+         <control>
+                <status>0x90</status>
+                <midino>0x2b</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.LoadSelectedTrack</key>
+                <options>
+                    <script-binding/>
+                </options>
+          </control>
+
+<!-- B rastered wheel press -->
+         <control>
+                <status>0x91</status>
+                <midino>0x2b</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.LoadSelectedTrack</key>
+                <options>
+                    <script-binding/>
+                </options>
+          </control>
+
+<!-- A jog wheel top surface touch -->
+	<control>
+                <status>0x90</status>
+                <midino>0x20</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.JogWheel_Hold</key>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- B jog wheel top surface touch -->
+	<control>
+                <status>0x91</status>
+                <midino>0x20</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.JogWheel_Hold</key>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- A jog wheel turn -->
+	  <control>
+                <status>0xb0</status>
+                <midino>0x35</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.JogWheel</key>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- B jog wheel turn -->
+	  <control>
+                <status>0xb1</status>
+                <midino>0x35</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.JogWheel</key>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+<!-- A scratch button -->
+            <control>
+                <status>0x90</status>
+                <midino>0x2f</midino>
+                <group>[Channel1]</group>
+		<key>RMP3.Scratch</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B scratch button -->
+            <control>
+                <status>0x91</status>
+                <midino>0x2f</midino>
+                <group>[Channel2]</group>
+		<key>RMP3.Scratch</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A eq highkill b1_1 -->
+            <control>
+                <status>0x90</status>
+                <midino>0x1e</midino>
+                <group>[Channel1]</group>
+		<key>filterHighKill</key>
+                <description></description>
+                <options>
+			<normal/>
+                </options>
+            </control>
+
+<!-- B eq highkill b1_1 -->
+            <control>
+                <status>0x91</status>
+                <midino>0x1e</midino>
+                <group>[Channel2]</group>
+		<key>filterHighKill</key>
+                <description></description>
+                <options>
+			<normal/>
+                </options>
+            </control>
+
+<!-- A eq midkill b2_1 -->
+            <control>
+                <status>0x90</status>
+                <midino>0xc</midino>
+                <group>[Channel1]</group>
+		<key>filterMidKill</key>
+                <description></description>
+                <options>
+			<normal/>
+                </options>
+            </control>
+
+<!-- B eq midkill b2_1 -->
+            <control>
+                <status>0x91</status>
+                <midino>0xc</midino>
+                <group>[Channel2]</group>
+		<key>filterMidKill</key>
+                <description></description>
+                <options>
+			<normal/>
+                </options>
+            </control>
+
+<!-- A eq lowkill b4_1 -->
+            <control>
+                <status>0x90</status>
+                <midino>0x12</midino>
+                <group>[Channel1]</group>
+		<key>filterLowKill</key>
+                <description></description>
+                <options>
+			<normal/>
+                </options>
+            </control>
+
+<!-- B eq lowkill b4_1 -->
+            <control>
+                <status>0x91</status>
+                <midino>0x12</midino>
+                <group>[Channel2]</group>
+		<key>filterLowKill</key>
+                <description></description>
+                <options>
+			<normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 1 activate / set -->
+            <control>
+                <status>0x90</status>
+                <midino>0x1c</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_1_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 1 activate / set -->
+            <control>
+                <status>0x91</status>
+                <midino>0x1c</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_1_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 2 activate / set -->
+            <control>
+                <status>0x90</status>
+                <midino>0xa</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_2_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 2 activate / set -->
+            <control>
+                <status>0x91</status>
+                <midino>0xa</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_2_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 3 activate / set -->
+            <control>
+                <status>0x90</status>
+                <midino>0x10</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_3_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 3 activate / set -->
+            <control>
+                <status>0x91</status>
+                <midino>0x10</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_3_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 4 activate / set -->
+            <control>
+                <status>0x90</status>
+                <midino>0xf</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_4_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 4 activate / set -->
+            <control>
+                <status>0x91</status>
+                <midino>0xf</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_4_activate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- hotcue 1-4 clear with hold SHIFT -->
+<!-- A hotcue 1 clear -->
+            <control>
+                <status>0x90</status>
+                <midino>0x5b</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_1_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 1 clear -->
+            <control>
+                <status>0x91</status>
+                <midino>0x5b</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_1_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 2 clear -->
+            <control>
+                <status>0x90</status>
+                <midino>0x49</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_2_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 2 clear -->
+            <control>
+                <status>0x91</status>
+                <midino>0x49</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_2_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 3 clear -->
+            <control>
+                <status>0x90</status>
+                <midino>0x4f</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_3_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 3 clear -->
+            <control>
+                <status>0x91</status>
+                <midino>0x4f</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_3_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A hotcue 4 clear -->
+            <control>
+                <status>0x90</status>
+                <midino>0x4e</midino>
+                <group>[Channel1]</group>
+                <key>hotcue_4_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B hotcue 4 clear -->
+            <control>
+                <status>0x91</status>
+                <midino>0x4e</midino>
+                <group>[Channel2]</group>
+                <key>hotcue_4_clear</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A nudge mode start -->
+            <control>
+                <status>0x90</status>
+                <midino>0x13</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.nudgeLoopStart</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B nudge mode start -->
+            <control>
+                <status>0x91</status>
+                <midino>0x13</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.nudgeLoopStart</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A nudge mode end -->
+            <control>
+                <status>0x90</status>
+                <midino>0xd</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.nudgeLoopEnd</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B nudge mode end -->
+            <control>
+                <status>0x91</status>
+                <midino>0xd</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.nudgeLoopEnd</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A loop in -->
+            <control>
+                <status>0x90</status>
+                <midino>0x16</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.LoopIn</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B loop in -->
+            <control>
+                <status>0x91</status>
+                <midino>0x16</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.LoopIn</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A loop out -->
+            <control>
+                <status>0x90</status>
+                <midino>0x2e</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.LoopOut</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B loop out -->
+            <control>
+                <status>0x91</status>
+                <midino>0x2e</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.LoopOut</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A exit loop -->
+            <control>
+                <status>0x90</status>
+                <midino>0x22</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.ReloopExit</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B exit loop -->
+            <control>
+                <status>0x91</status>
+                <midino>0x22</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.ReloopExit</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A lock key -->
+            <control>
+                <status>0x90</status>
+                <midino>0x14</midino>
+                <group>[Channel1]</group>
+                <key>keylock</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B lock key -->
+            <control>
+                <status>0x91</status>
+                <midino>0x14</midino>
+                <group>[Channel2]</group>
+                <key>keylock</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A pitch slider -->
+            <control>
+                <status>0xe0</status>
+                <midino>0x5e</midino>
+                <group>[Channel1]</group>
+                <key>rate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B pitch slider -->
+            <control>
+                <status>0xe1</status>
+                <midino>0x5e</midino>
+                <group>[Channel2]</group>
+                <key>rate</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A sync -->
+            <control>
+                <status>0x90</status>
+                <midino>0x9</midino>
+                <group>[Channel1]</group>
+                <key>beatsync_tempo</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B sync -->
+            <control>
+                <status>0x91</status>
+                <midino>0x9</midino>
+                <group>[Channel2]</group>
+                <key>beatsync_tempo</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A save to -->
+            <control>
+                <status>0x90</status>
+                <midino>0x4</midino>
+                <group>[Channel1]</group>
+                <key>loop_halve</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B save to -->
+            <control>
+                <status>0x91</status>
+                <midino>0x4</midino>
+                <group>[Channel2]</group>
+                <key>loop_halve</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A sampler  -->
+            <control>
+                <status>0x90</status>
+                <midino>0x28</midino>
+                <group>[Channel1]</group>
+                <key>loop_double</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B sampler  -->
+            <control>
+                <status>0x91</status>
+                <midino>0x28</midino>
+                <group>[Channel2]</group>
+                <key>loop_double</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A bpm tap -->
+            <control>
+                <status>0x90</status>
+                <midino>0x3</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.beat_tap</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B bpm tap -->
+            <control>
+                <status>0x91</status>
+                <midino>0x3</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.beat_tap</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A fast forward / rewind (bender/wheel) -->
+            <control>
+                <status>0xb0</status>
+                <midino>0x15</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.back_fwd</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B fast forward / rewind (bender/wheel) -->
+            <control>
+                <status>0xb1</status>
+                <midino>0x15</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.back_fwd</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A skid/repeat -->
+            <control>
+                <status>0x90</status>
+                <midino>0x29</midino>
+                <group>[Channel1]</group>
+                <key>repeat</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B skid/repeat -->
+            <control>
+                <status>0x91</status>
+                <midino>0x29</midino>
+                <group>[Channel2]</group>
+                <key>repeat</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A filter/adjust beat grid -->
+            <control>
+                <status>0x90</status>
+                <midino>0x11</midino>
+                <group>[Channel1]</group>
+                <key>beats_translate_curpos</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B filter/adjust beat grid -->
+            <control>
+                <status>0x91</status>
+                <midino>0x11</midino>
+                <group>[Channel2]</group>
+                <key>beats_translate_curpos</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A phase / quantize -->
+            <control>
+                <status>0x90</status>
+                <midino>0xb</midino>
+                <group>[Channel1]</group>
+                <key>quantize</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B phase / quantize -->
+            <control>
+                <status>0x91</status>
+                <midino>0xb</midino>
+                <group>[Channel2]</group>
+                <key>quantize</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A change rate range -->
+            <control>
+                <status>0x90</status>
+                <midino>0x1a</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.changeRateRange</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- B change rate range -->
+            <control>
+                <status>0x91</status>
+                <midino>0x1a</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.changeRateRange</key>
+                <description></description>
+                <options>
+			 <script-binding/>
+                </options>
+            </control>
+
+<!-- A MINUS -->
+            <control>
+                <status>0x90</status>
+                <midino>0x8</midino>
+                <group>[Channel1]</group>
+                <key>rate_temp_down_small</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B MINUS -->
+            <control>
+                <status>0x91</status>
+                <midino>0x8</midino>
+                <group>[Channel2]</group>
+                <key>rate_temp_down_small</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A PLUS -->
+            <control>
+                <status>0x90</status>
+                <midino>0x2</midino>
+                <group>[Channel1]</group>
+                <key>rate_temp_up_small</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- B PLUS -->
+            <control>
+                <status>0x91</status>
+                <midino>0x2</midino>
+                <group>[Channel2]</group>
+                <key>rate_temp_up_small</key>
+                <description></description>
+                <options>
+                    <normal/>
+                </options>
+            </control>
+
+<!-- A Pitch 0% -->
+            <control>
+                <status>0x90</status>
+                <midino>0x26</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.pitchZero</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!-- B Pitch 0% -->
+            <control>
+                <status>0x91</status>
+                <midino>0x26</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.pitchZero</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!--A flanger -->
+            <control>
+                <status>0x90</status>
+                <midino>0x21</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.sensitivity1</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!--B flanger -->
+            <control>
+                <status>0x91</status>
+                <midino>0x21</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.sensitivity1</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!--A trans -->
+            <control>
+                <status>0x90</status>
+                <midino>0x27</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.sensitivity2</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!--B trans -->
+            <control>
+                <status>0x91</status>
+                <midino>0x27</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.sensitivity2</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!--A pan -->
+            <control>
+                <status>0x90</status>
+                <midino>0x2d</midino>
+                <group>[Channel1]</group>
+                <key>RMP3.sensitivity3</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+<!--B pan -->
+            <control>
+                <status>0x91</status>
+                <midino>0x2d</midino>
+                <group>[Channel2]</group>
+                <key>RMP3.sensitivity3</key>
+                <description></description>
+                <options>
+			<script-binding/>
+                </options>
+            </control>
+
+        </controls>
+        <outputs/>
+    </controller>
+</MixxxMIDIPreset>
