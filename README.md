@@ -1,4 +1,4 @@
-rmp3 - Control mixxx with RMP-3 Device
+Control mixxx with RMP-3 Device
 ======================================
 
 MIDI mapping and script files for the Reloop RMP-3 cross media player to use as controller in mixxx (tested with Version 1.11.0).
