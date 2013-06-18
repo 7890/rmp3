@@ -1,5 +1,5 @@
 /****************************************************************/
-/*      Reloop RMP-3 Cross Media Player controller script v2.0  */
+/*      Reloop RMP-3 Cross Media Player controller script v2.1  */
 /*      Feel free to tweak!                                     */
 /*      Works best with Mixxx version 1.11.x                    */
 /*      Overview on Bindings:  http://lowres.ch/rmp3/index.html */
@@ -18,7 +18,7 @@ c.channelCount_=2;
 c.function_prefix_='c';
 /*name of javascript file (this)*/
 c.js_file_='Reloop-RMP-3-scripts.js';
-c.script_version_='2.0';
+c.script_version_='2.1';
 
 /*common midi values*/
 c.ledOn = 0x7F;
@@ -41,24 +41,32 @@ c.rateRange[1]=0.08;
 c.rateRange[2]=0.16;
 c.rateRange[3]=1.00;
 
-c.currentRateRange=new Array(2);
+c.currentRateRange=new Array(c.channelCount_);
 c.currentRateRange[0]=1;
 c.currentRateRange[1]=1;
 
-c.scratchMode = new Array(2);
+c.scratchMode = new Array(c.channelCount_);
 c.scratchMode[0] = 0;
 c.scratchMode[1] = 0;
 
 /*1 (fast) - 3 (slow)*/
 /*used for jog scratch and loop nudge*/
-c.sensitivity = new Array(2);
+c.sensitivity = new Array(c.channelCount_);
 c.sensitivity[0]=1;
 c.sensitivity[1]=1;
 
-/*0: none, 1: start, 2: end*/
-c.nudgeMode = new Array(2);
+/*0: none, 1: start, 2: end, 3: both*/
+c.nudgeMode = new Array(c.channelCount_);
 c.nudgeMode[0]=0;
 c.nudgeMode[1]=0;
+
+c.nudgeStartPressed = new Array(c.channelCount_);
+c.nudgeStartPressed[0]=0;
+c.nudgeStartPressed[1]=0;
+
+c.nudgeEndPressed = new Array(c.channelCount_);
+c.nudgeEndPressed[0]=0;
+c.nudgeEndPressed[1]=0;
 
 /*==========================================================================*/
 /*map: create control object and put to controls array*/
@@ -133,6 +141,7 @@ c.printXml=function()
 	var d=new Date();
 	var out='<MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">';
 	out+='<!-- created '+d+' -->';
+	out+='<!-- script version '+c.script_version_+' -->';
 
 	out+=c.x('info',
 		c.x('name',c.name_)
@@ -343,6 +352,10 @@ c.map("0x9",c.i.jog_top	,c.channel,"c.JogWheel_Hold","",c.script_binding,0);
 c.map("0x9",c.i.scratch	,c.channel,"c.Scratch","",c.script_binding,0);
 c.map("0x9",c.i.prev	,c.channel,"c.nudgeLoopStart","",c.script_binding,0);
 c.map("0x9",c.i.next	,c.channel,"c.nudgeLoopEnd","",c.script_binding,0);
+
+c.map("0x9",c.i.prev_shift,c.channel,"c.stepLoopBack","",c.script_binding,0);
+c.map("0x9",c.i.next_shift,c.channel,"c.stepLoopForward","",c.script_binding,0);
+
 c.map("0x9",c.i.loop_in	,c.channel,"c.LoopIn","",c.script_binding,0);
 c.map("0x9",c.i.loop_out,c.channel,"c.LoopOut","",c.script_binding,0);
 c.map("0x9",c.i.reloop	,c.channel,"c.ReloopExit","",c.script_binding,0);
@@ -471,7 +484,7 @@ c.connectEvents = function()
 		engine.connectControl(group,"hotcue_4_enabled","c.OnHotcue1_4");
 
 		engine.connectControl(group,"loop_enabled","c.OnLoopEnabled");
-		/*engine.connectControl(group,"beat_active","c.OnBeatActive");*/
+		engine.connectControl(group,"beat_active","c.OnBeatActive");
 
 		/*more connections done via map()*/
 
@@ -519,17 +532,91 @@ c.shutdown = function(id)
 	c.resetLEDs();
 };
 
+c.stepLoopBack = function(channel, control, value, status, group)
+{
+	if(value == c.keyPressed)
+	{
+		print("step loop backward");
+
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		print("LOOP START "+loopStartPos);
+
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+		print("LOOP END "+loopEndPos);
+
+		var diff=loopEndPos-loopStartPos;
+		loopStartPos-=diff;
+		loopEndPos-=diff;
+
+		engine.setValue(group, "loop_start_position",loopStartPos);
+
+		/*set cue point to start of loop*/
+		engine.setValue(group,"cue_point",loopStartPos);
+
+		engine.setValue(group, "loop_end_position",loopEndPos);
+	}
+};
+
+c.stepLoopForward = function(channel, control, value, status, group)
+{
+	if(value == c.keyPressed)
+	{
+		print("step loop forward");
+
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		print("LOOP START "+loopStartPos);
+
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+		print("LOOP END "+loopEndPos);
+
+		var diff=loopEndPos-loopStartPos;
+		loopStartPos+=diff;
+		loopEndPos+=diff;
+
+		engine.setValue(group, "loop_end_position",loopEndPos);
+
+		engine.setValue(group, "loop_start_position",loopStartPos);
+
+		/*set cue point to start of loop*/
+		engine.setValue(group,"cue_point",loopStartPos);
+	}
+};
+
+c.evaluateNudgeMode = function(index)
+{
+	/*start*/
+	if(c.nudgeStartPressed[index]==1 && c.nudgeEndPressed[index]==0)
+	{
+		c.nudgeMode[index]=1;
+	}
+	/*end*/
+	else if(c.nudgeStartPressed[index]==0 && c.nudgeEndPressed[index]==1)
+	{
+		c.nudgeMode[index]=2;
+	}
+	/*if both pressed*/
+	else if(c.nudgeStartPressed[index]==1 && c.nudgeEndPressed[index]==1)
+	{
+		c.nudgeMode[index]=3;
+	}
+	else 
+	{
+		c.nudgeMode[index]=0;
+	}
+};
+
 c.nudgeLoopStart = function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
 	{
-		c.nudgeMode[index]=1;
+		c.nudgeStartPressed[index]=1;
 	}
 	else
 	{
-		c.nudgeMode[index]=0;
+		c.nudgeStartPressed[index]=0;
 	}
+	c.evaluateNudgeMode(index);
 };
 
 c.nudgeLoopEnd = function (channel, control, value, status, group)
@@ -537,12 +624,13 @@ c.nudgeLoopEnd = function (channel, control, value, status, group)
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
 	{
-		c.nudgeMode[index]=2;
+		c.nudgeEndPressed[index]=1;
 	}
 	else
 	{
-		c.nudgeMode[index]=0;
+		c.nudgeEndPressed[index]=0;
 	}
+	c.evaluateNudgeMode(index);
 };
 
 c.changeRateRange = function (channel, control, value, status, group)
@@ -900,6 +988,37 @@ c.PrevNextWheel = function (channel, control, value, status, group)
 		}
 		engine.setValue(group, "loop_end_position",loopEndPos);
 	}
+	else if(c.nudgeMode[index]==3)
+	{
+		/*set loop boundaries start and end*/
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		print("LOOP START "+loopStartPos);
+
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+		print("LOOP END "+loopEndPos);
+
+		/*ccw*/
+		if(value==63)
+		{
+			loopStartPos-=step;
+			loopEndPos-=step;
+		}
+		/*cw 65*/
+		else
+		{
+			loopStartPos+=step;
+			loopEndPos+=step;
+
+		}
+
+		engine.setValue(group, "loop_start_position",loopStartPos);
+
+		/*set cue point to start of loop*/
+		engine.setValue(group,"cue_point",loopStartPos);
+
+		engine.setValue(group, "loop_end_position",loopEndPos);
+
+	}
 	else
 	{
 		/*if not setting start or end, do track list browsing*/
@@ -976,15 +1095,17 @@ c.OnLoopEnabled = function (value,group)
 
 c.beatLed=0;
 
-/*
-RMP3.OnBeatActive = function (value,group)
+c.OnBeatActive = function (value,group)
 {
 	if(value==1)
 	{
-		print("BEAT "+group);
+		c.lOn_(c.i.filter,group);
+		/*print("BEAT "+group);*/
+
+		/*one shot timer to turn off led after 50 ms*/
+		engine.beginTimer(50,'c.lOff_(c.i.filter,"'+group+'")',true);
 	}
-}
-*/		
+};
 
 /*some c.Onxxx get created via map()*/
 
