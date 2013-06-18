@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">
-  <!-- created Sat Jun 08 2013 04:13:26 GMT+0200 (CEST) -->
+  <!-- created Tue Jun 18 2013 14:56:20 GMT+0200 (CEST) -->
+  <!-- script version 2.1 -->
   <info>
     <name>Reloop RMP-3</name>
     <author>Thomas Brand</author>
@@ -667,6 +668,50 @@
         <description/>
         <group>[Channel2]</group>
         <key>c.nudgeLoopEnd</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x52_0-->
+      <control>
+        <midino>0x52</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.stepLoopBack</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x52_1-->
+      <control>
+        <midino>0x52</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.stepLoopBack</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x4c_0-->
+      <control>
+        <midino>0x4c</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.stepLoopForward</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x4c_1-->
+      <control>
+        <midino>0x4c</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.stepLoopForward</key>
         <options>
           <script-binding/>
         </options>
