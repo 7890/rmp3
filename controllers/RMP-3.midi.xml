@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">
-  <!-- created Tue Jun 18 2013 14:56:20 GMT+0200 (CEST) -->
-  <!-- script version 2.1 -->
+  <!-- created Tue Jun 18 2013 22:33:42 GMT+0200 (CEST) -->
+  <!-- script version 2.2 -->
   <info>
     <name>Reloop RMP-3</name>
     <author>Thomas Brand</author>
@@ -516,6 +516,50 @@
         <key>loop_double</key>
         <options>
           <normal/>
+        </options>
+      </control>
+      <!--_0x43_0-->
+      <control>
+        <midino>0x43</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.loopDoubleInverse</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x43_1-->
+      <control>
+        <midino>0x43</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.loopDoubleInverse</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x67_0-->
+      <control>
+        <midino>0x67</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.loopHalveInverse</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x67_1-->
+      <control>
+        <midino>0x67</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.loopHalveInverse</key>
+        <options>
+          <script-binding/>
         </options>
       </control>
       <!--_0x08_0-->

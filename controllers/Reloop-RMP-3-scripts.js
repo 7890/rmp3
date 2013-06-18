@@ -1,11 +1,11 @@
 /****************************************************************/
-/*      Reloop RMP-3 Cross Media Player controller script v2.1  */
+/*      Reloop RMP-3 Cross Media Player controller script v2.2  */
 /*      Feel free to tweak!                                     */
 /*      Works best with Mixxx version 1.11.x                    */
 /*      Overview on Bindings:  http://lowres.ch/rmp3/index.html */
 /****************************************************************/
 
-/*//tb/130407/130520/130608*/
+/*//tb/130407/130520/130608/130617/130618*/
 
 function c() {};
 
@@ -18,7 +18,7 @@ c.channelCount_=2;
 c.function_prefix_='c';
 /*name of javascript file (this)*/
 c.js_file_='Reloop-RMP-3-scripts.js';
-c.script_version_='2.1';
+c.script_version_='2.2';
 
 /*common midi values*/
 c.ledOn = 0x7F;
@@ -342,8 +342,14 @@ c.map("0x9",c.i._2_shift,c.channel,"hotcue_2_clear","",c.normal,0);
 c.map("0x9",c.i._3_shift,c.channel,"hotcue_3_clear","",c.normal,0);
 c.map("0x9",c.i._4_shift,c.channel,"hotcue_4_clear","",c.normal,0);
 c.map("0x9",c.i.bpm,c.channel,"beatsync_tempo","",c.normal,0);
+
 c.map("0x9",c.i.save_to	,c.channel,"loop_halve","",c.normal,0);
 c.map("0x9",c.i.sampler	,c.channel,"loop_double","",c.normal,0);
+
+/*note inverse mapping*/
+c.map("0x9",c.i.save_to_shift	,c.channel,"c.loopDoubleInverse","",c.script_binding,0);
+c.map("0x9",c.i.sampler_shift	,c.channel,"c.loopHalveInverse","",c.script_binding,0);
+
 c.map("0x9",c.i.minus	,c.channel,"rate_temp_down_small","",c.normal,0);
 c.map("0x9",c.i.plus	,c.channel,"rate_temp_up_small","",c.normal,0);
 
@@ -532,17 +538,46 @@ c.shutdown = function(id)
 	c.resetLEDs();
 };
 
+c.loopHalveInverse = function(channel, control, value, status, group)
+{
+	if(value == c.keyPressed)
+	{
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+
+		var diff=loopEndPos-loopStartPos;
+		loopStartPos+=(diff/2);
+
+		engine.setValue(group, "loop_start_position",loopStartPos);
+
+		/*set cue point to start of loop*/
+		engine.setValue(group,"cue_point",loopStartPos);
+	}
+};
+
+c.loopDoubleInverse = function(channel, control, value, status, group)
+{
+	if(value == c.keyPressed)
+	{
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+
+		var diff=loopEndPos-loopStartPos;
+		loopStartPos-=diff;
+
+		engine.setValue(group, "loop_start_position",loopStartPos);
+
+		/*set cue point to start of loop*/
+		engine.setValue(group,"cue_point",loopStartPos);
+	}
+};
+
 c.stepLoopBack = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
-		print("step loop backward");
-
 		var loopStartPos=engine.getValue(group, "loop_start_position");
-		print("LOOP START "+loopStartPos);
-
 		var loopEndPos=engine.getValue(group, "loop_end_position");
-		print("LOOP END "+loopEndPos);
 
 		var diff=loopEndPos-loopStartPos;
 		loopStartPos-=diff;
@@ -561,13 +596,8 @@ c.stepLoopForward = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
-		print("step loop forward");
-
 		var loopStartPos=engine.getValue(group, "loop_start_position");
-		print("LOOP START "+loopStartPos);
-
 		var loopEndPos=engine.getValue(group, "loop_end_position");
-		print("LOOP END "+loopEndPos);
 
 		var diff=loopEndPos-loopStartPos;
 		loopStartPos+=diff;
