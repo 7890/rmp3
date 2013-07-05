@@ -11,6 +11,8 @@ Feel free to adapt to your needs!
 
 The author is not related to Reloop. This is a user contribution to mixxx.
 
+![Bindings](reloop-rmp3-bindings-for-mixxx.png)
+
 Install on Linux
 ----------------
 
