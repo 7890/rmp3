@@ -21,10 +21,10 @@ c.js_file_='Reloop-RMP-3-scripts.js';
 c.script_version_='2.2';
 
 /*common midi values*/
-c.ledOn = 0x7F;
-c.ledOff = 0x00;
-c.keyPressed = 0x7F;
-c.keyUp = 0x00;
+c.ledOn=0x7F;
+c.ledOff=0x00;
+c.keyPressed=0x7F;
+c.keyUp=0x00;
 
 /*array holding all control 'objects'*/
 c.controls=new Array();
@@ -45,26 +45,26 @@ c.currentRateRange=new Array(c.channelCount_);
 c.currentRateRange[0]=1;
 c.currentRateRange[1]=1;
 
-c.scratchMode = new Array(c.channelCount_);
-c.scratchMode[0] = 0;
-c.scratchMode[1] = 0;
+c.scratchMode=new Array(c.channelCount_);
+c.scratchMode[0]=0;
+c.scratchMode[1]=0;
 
 /*1 (fast) - 3 (slow)*/
 /*used for jog scratch and loop nudge*/
-c.sensitivity = new Array(c.channelCount_);
+c.sensitivity=new Array(c.channelCount_);
 c.sensitivity[0]=1;
 c.sensitivity[1]=1;
 
 /*0: none, 1: start, 2: end, 3: both*/
-c.nudgeMode = new Array(c.channelCount_);
+c.nudgeMode=new Array(c.channelCount_);
 c.nudgeMode[0]=0;
 c.nudgeMode[1]=0;
 
-c.nudgeStartPressed = new Array(c.channelCount_);
+c.nudgeStartPressed=new Array(c.channelCount_);
 c.nudgeStartPressed[0]=0;
 c.nudgeStartPressed[1]=0;
 
-c.nudgeEndPressed = new Array(c.channelCount_);
+c.nudgeEndPressed=new Array(c.channelCount_);
 c.nudgeEndPressed[0]=0;
 c.nudgeEndPressed[1]=0;
 
@@ -99,7 +99,7 @@ c.map=function(status,midino,group,key,description,option,connect)
 		str+=control_name+'.options=option;';
 
 		/*object can express itself as xml*/
-		str+=control_name+'.xml = function()';
+		str+=control_name+'.xml=function()';
 		str+='{';
 		str+='return \'';
 		str+='<!--'+control_name+'-->';
@@ -113,7 +113,7 @@ c.map=function(status,midino,group,key,description,option,connect)
 
 		if(connect==1)
 		{
-			var str_='c.On'+key+' = function (value,group)';
+			var str_='c.On'+key+'=function (value,group)';
 			str_+='{';
 			str_+='c.led_('+midino+',value,group);';
 			str_+='};';
@@ -183,7 +183,7 @@ c.i=
 	,track:			'0x2b' /*press*/
 
 /*pitchbend event*/
-	,pitch_slider:		'0xe0' 
+	,pitch_slider:		'0xe0'
 
 	,pitch_slider_center:	'0x26'
 	,search:		'0x15' /*cc: center: 0x40 (64)*/
@@ -199,7 +199,7 @@ c.i=
 	,track_whell_shift:	'0x71' /*cc: 0x3f: ccw  0x41: cw*/
 	,track_shift:		'0x6a'
 
-	,pitch_slider_shift:	'0x31' /*cc: 0x00 (PLUS side) - 0x7f (MINUS side)*/ 
+	,pitch_slider_shift:	'0x31' /*cc: 0x00 (PLUS side) - 0x7f (MINUS side)*/
 
 	,pitch_slider_center_shift:	'0x65'
 	,search_shift:		'0x54' /*cc: center: 0x40 (64)*/
@@ -246,7 +246,7 @@ c.i=
 	,_4:			'0x0f'
 	,save_to:		'0x04'
 	,sampler:		'0x28'
-	,pitch:			'0x0e' 
+	,pitch:			'0x0e'
 	,keylock:		'0x14'
 
 /*plus SHIFT, switches */
@@ -255,7 +255,7 @@ c.i=
 	,time_shift:		'0x58'
 	,next_shift:		'0x4c'
 	,prev_shift:		'0x52'
-/*	,shift_shift:		'0x'  no shift-shift :)*/ 
+/*	,shift_shift:		'0x'  no shift-shift :)*/
 	,eject_shift:		'0x5a'
 	,reloop_shift:		'0x61'
 	,bpm_shift:		'0x68'
@@ -292,7 +292,7 @@ c.i=
 	,save_to_shift:		'0x43'
 	,sampler_shift:		'0x67'
 	,undef_shift:		'0x53' /*fader crosses zero?*/
-	,pitch_shift:		'0x4d' 
+	,pitch_shift:		'0x4d'
 
 /*led only / second led*/
 	,scratch_2:		'0x31'
@@ -387,7 +387,7 @@ c.map("0xe","0x5e"	,c.channel,"rate","",c.normal,0);
 /*common function (called by mixxx at startup/load control interface)*/
 /*==========================================================================*/
 
-c.init = function(id)
+c.init=function(id)
 {
 	print ("Initalizing Reloop RMP-3...");
 
@@ -399,8 +399,8 @@ c.init = function(id)
 
 }; /*end c.init*/
 
-/*c.setInitialValues = function(group)*/
-c.setInitialValues = function()
+/*c.setInitialValues=function(group)*/
+c.setInitialValues=function()
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -470,11 +470,10 @@ c.setInitialValues = function()
 			c.led_(c.i.loop_out,1,group);
 		}
 	}/*end for channelcount*/
-
 }; /*end c.setInitialValues*/
 
-/*c.connectEvents = function(group)*/
-c.connectEvents = function()
+/*c.connectEvents=function(group)*/
+c.connectEvents=function()
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -497,8 +496,8 @@ c.connectEvents = function()
 	} /*end for channelcount*/
 }; /*end c.connectEvents*/
 
-/*c.resetLEDs = function(group)*/
-c.resetLEDs = function()
+/*c.resetLEDs=function(group)*/
+c.resetLEDs=function()
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -518,11 +517,11 @@ c.resetLEDs = function()
 		c.led_(c.i._4,0,group);
 		c.led_(c.i.scratch,0,group);
 		c.led_(c.i.skid,0,group);
-		c.led_(c.i.scratch,0,group);	
+		c.led_(c.i.scratch,0,group);
 		c.led_(c.i.phase,0,group);
 		c.led_(c.i.pitch_4,0,group);
 		c.led_(c.i.pitch_8,0,group);
-		c.led_(c.i.pitch_16,0,group);	
+		c.led_(c.i.pitch_16,0,group);
 		c.led_(c.i.pitch_100,0,group);
 		c.led_(c.i.keylock,0,group);
 		c.led_(c.i.pitch0,0,group);
@@ -532,13 +531,13 @@ c.resetLEDs = function()
 	}
 }; /*end c.resetLEDs*/
 
-c.shutdown = function(id)
+c.shutdown=function(id)
 {
 	/*Turn all LEDs off by using init function*/
 	c.resetLEDs();
 };
 
-c.loopHalveInverse = function(channel, control, value, status, group)
+c.loopHalveInverse=function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -555,7 +554,7 @@ c.loopHalveInverse = function(channel, control, value, status, group)
 	}
 };
 
-c.loopDoubleInverse = function(channel, control, value, status, group)
+c.loopDoubleInverse=function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -572,7 +571,7 @@ c.loopDoubleInverse = function(channel, control, value, status, group)
 	}
 };
 
-c.stepLoopBack = function(channel, control, value, status, group)
+c.stepLoopBack=function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -592,7 +591,7 @@ c.stepLoopBack = function(channel, control, value, status, group)
 	}
 };
 
-c.stepLoopForward = function(channel, control, value, status, group)
+c.stepLoopForward=function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -612,7 +611,7 @@ c.stepLoopForward = function(channel, control, value, status, group)
 	}
 };
 
-c.evaluateNudgeMode = function(index)
+c.evaluateNudgeMode=function(index)
 {
 	/*start*/
 	if(c.nudgeStartPressed[index]==1 && c.nudgeEndPressed[index]==0)
@@ -629,13 +628,13 @@ c.evaluateNudgeMode = function(index)
 	{
 		c.nudgeMode[index]=3;
 	}
-	else 
+	else
 	{
 		c.nudgeMode[index]=0;
 	}
 };
 
-c.nudgeLoopStart = function (channel, control, value, status, group)
+c.nudgeLoopStart=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -649,7 +648,7 @@ c.nudgeLoopStart = function (channel, control, value, status, group)
 	c.evaluateNudgeMode(index);
 };
 
-c.nudgeLoopEnd = function (channel, control, value, status, group)
+c.nudgeLoopEnd=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -663,7 +662,7 @@ c.nudgeLoopEnd = function (channel, control, value, status, group)
 	c.evaluateNudgeMode(index);
 };
 
-c.changeRateRange = function (channel, control, value, status, group)
+c.changeRateRange=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -708,7 +707,7 @@ c.changeRateRange = function (channel, control, value, status, group)
 	}
 }; /*end c.changeRateRange*/
 
-c.pitchZero = function (channel, control, value, status, group)
+c.pitchZero=function (channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -721,7 +720,7 @@ c.pitchZero = function (channel, control, value, status, group)
 	}
 };
 
-c.beat_tap = function (channel, control, value, status, group)
+c.beat_tap=function (channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -729,7 +728,7 @@ c.beat_tap = function (channel, control, value, status, group)
 	}
 };
 
-c.back_fwd = function (channel, control, value, status, group)
+c.back_fwd=function (channel, control, value, status, group)
 {
 	if(value==64)
 	{
@@ -746,15 +745,15 @@ c.back_fwd = function (channel, control, value, status, group)
 	}
 };
 
-c.playTrack = function (channel, control, value, status, group) 
+c.playTrack=function (channel, control, value, status, group)
 {
 	/*no action of no song loaded to deck*/
-	if (engine.getValue(group, "duration") == 0) 
-	{ 
-		return; 
+	if (engine.getValue(group, "duration") == 0)
+	{
+		return;
 	}
 
-	var isCupActive = engine.getValue(group,"cue_default");
+	var isCupActive=engine.getValue(group,"cue_default");
 	if(isCupActive == true)
 	{
 		/*allow to change from cue to play mode (press play while cue hold, then let go cue)*/
@@ -762,26 +761,26 @@ c.playTrack = function (channel, control, value, status, group)
 		return;
 	}
 
-	var currentlyPlaying = engine.getValue(group,"play");
+	var currentlyPlaying=engine.getValue(group,"play");
 	if(value == c.keyPressed)
 	{
-		if (currentlyPlaying == 1) 
+		if (currentlyPlaying == 1)
 		{
 			engine.setValue(group,"play",0);
 		}
-		else 
+		else
 		{
 			engine.setValue(group,"play",1);
 		}
 	}
 }; /*end c.playTrack*/
 
-c.Cue = function (channel, control, value, status, group)
+c.Cue=function (channel, control, value, status, group)
 {
 	/*no action of no song loaded to deck*/
-	if (engine.getValue(group, "duration") == 0) 
-	{ 
-		return; 
+	if (engine.getValue(group, "duration") == 0)
+	{
+		return;
 	}
 
 	if(value == c.keyPressed)
@@ -790,14 +789,14 @@ c.Cue = function (channel, control, value, status, group)
 		c.led_(c.i.play_pause,0,group);
 		c.led_(control,1,group);
 	}
-	else 
+	else
 	{
 		engine.setValue(group,"cue_default",0);
-		c.led_(control,0,group);		
-	}	
+		c.led_(control,0,group);
+	}
 };
 
-c.Scratch = function (channel, control, value, status, group)
+c.Scratch=function (channel, control, value, status, group)
 {
 	/*see hold*/
 	if(value == c.keyPressed)
@@ -805,24 +804,24 @@ c.Scratch = function (channel, control, value, status, group)
 		var index=c.getIndex_(group);
 		if(c.scratchMode[index] == 1)
 		{
-			c.scratchMode[index] = 0;
+			c.scratchMode[index]=0;
 			c.led_(control,0,group);
 		}
 		else
 		{
-			c.scratchMode[index] = 1;
+			c.scratchMode[index]=1;
 			c.led_(control,1,group);
 		}
 	}
 };
 
 /*sensitivity 1*/
-c.sensitivity1 = function (channel, control, value, status, group)
+c.sensitivity1=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
 	{
-			c.sensitivity[index] = 1;
+			c.sensitivity[index]=1;
 			c.led_(c.i.flanger,1,group);
 			c.led_(c.i.trans,0,group);
 			c.led_(c.i.pan,0,group);
@@ -830,12 +829,12 @@ c.sensitivity1 = function (channel, control, value, status, group)
 };
 
 /*sensitivity 2*/
-c.sensitivity2 = function (channel, control, value, status, group)
+c.sensitivity2=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
 	{
-			c.sensitivity[index] = 2;
+			c.sensitivity[index]=2;
 			c.led_(c.i.flanger,0,group);
 			c.led_(c.i.trans,1,group);
 			c.led_(c.i.pan,0,group);
@@ -843,28 +842,28 @@ c.sensitivity2 = function (channel, control, value, status, group)
 };
 
 /*sensitivity 3*/
-c.sensitivity3 = function (channel, control, value, status, group)
+c.sensitivity3=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
 	{
-			c.sensitivity[index] = 3;
+			c.sensitivity[index]=3;
 			c.led_(c.i.flanger,0,group);
 			c.led_(c.i.trans,0,group);
 			c.led_(c.i.pan,1,group);
 	}
 };
 
-c.JogWheel = function (channel, control, value, status, group)
+c.JogWheel=function (channel, control, value, status, group)
 {
 	/*values +/- around 64*/
-	var jogValue = (value - 64); 
+	var jogValue=(value - 64);
 	/*print('jogwheel val: '+jogValue);*/
 
 	var index=c.getIndex_(group);
 
 	/*scratch*/
-	if (c.scratchMode[index] == 1) 
+	if (c.scratchMode[index] == 1)
 	{
 		engine.scratchTick(index+1,jogValue);
 	}
@@ -900,7 +899,7 @@ c.JogWheel = function (channel, control, value, status, group)
 }; /*end c.JogWheel*/
 
 /*should distinguish playing/non-playing*/
-c.JogWheel_Hold = function (channel, control, value, status, group)
+c.JogWheel_Hold=function (channel, control, value, status, group)
 {
 	/*see scratch*/
 	var index=c.getIndex_(group);
@@ -934,13 +933,13 @@ c.JogWheel_Hold = function (channel, control, value, status, group)
 	}
 };
 
-c.JogZoom = function (channel, control, value, status, group) 
+c.JogZoom=function (channel, control, value, status, group)
 {
 	/*1-6*/
 	engine.setValue(group,"waveform_zoom", ((value/127)*5+1));
 };
 
-c.PrevNextWheelShift = function (channel, control, value, status, group) 
+c.PrevNextWheelShift=function (channel, control, value, status, group)
 {
 	/*ccw*/
 	if(value==63)
@@ -954,7 +953,7 @@ c.PrevNextWheelShift = function (channel, control, value, status, group)
 	}
 };
 
-c.PrevNextWheel = function (channel, control, value, status, group) 
+c.PrevNextWheel=function (channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 
@@ -1066,7 +1065,7 @@ c.PrevNextWheel = function (channel, control, value, status, group)
 	}
 }; /*end c.PrevNextWheel*/
 
-c.LoadSelectedTrack = function (channel, control, value, status, group) 
+c.LoadSelectedTrack=function (channel, control, value, status, group)
 {
 	/*if pressed, will stop (if playing), load track and play at once*/
 	if(value == c.keyPressed)
@@ -1076,7 +1075,7 @@ c.LoadSelectedTrack = function (channel, control, value, status, group)
 	}
 };
 
-c.LoopIn = function (channel, control, value, status, group) 
+c.LoopIn=function (channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -1089,7 +1088,7 @@ c.LoopIn = function (channel, control, value, status, group)
 	}
 };
 
-c.LoopOut = function (channel, control, value, status, group) 
+c.LoopOut=function (channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -1097,7 +1096,7 @@ c.LoopOut = function (channel, control, value, status, group)
 	}
 };
 
-c.ReloopExit = function (channel, control, value, status, group)
+c.ReloopExit=function (channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -1117,7 +1116,7 @@ c.ReloopExit = function (channel, control, value, status, group)
 /*On event methods (from engine)*/
 /*==========================================================================*/
 
-c.OnLoopEnabled = function (value,group)
+c.OnLoopEnabled=function (value,group)
 {
 	c.led_(c.i.loop_in,value,group);
 	c.led_(c.i.loop_out,value,group);
@@ -1125,7 +1124,7 @@ c.OnLoopEnabled = function (value,group)
 
 c.beatLed=0;
 
-c.OnBeatActive = function (value,group)
+c.OnBeatActive=function (value,group)
 {
 	if(value==1)
 	{
@@ -1139,28 +1138,27 @@ c.OnBeatActive = function (value,group)
 
 /*some c.Onxxx get created via map()*/
 
-c.OnHotcue1_1 = function (value,group)
+c.OnHotcue1_1=function (value,group)
 {
 	c.led_(c.i._1,value,group);
 };
 
-c.OnHotcue1_2 = function (value,group)
+c.OnHotcue1_2=function (value,group)
 {
 	c.led_(c.i._2,value,group);
 };
 
-c.OnHotcue1_3 = function (value,group)
+c.OnHotcue1_3=function (value,group)
 {
 	c.led_(c.i._3,value,group);
 };
 
-c.OnHotcue1_4 = function (value,group)
+c.OnHotcue1_4=function (value,group)
 {
 	c.led_(c.i._4,value,group);
 };
 
-
-c.OnChannelPlaying = function (value,group,event)
+c.OnChannelPlaying=function (value,group,event)
 {
 		if(value == 0)
 		{
@@ -1173,10 +1171,10 @@ c.OnChannelPlaying = function (value,group,event)
 			{
 				c.led_(c.i.play_pause,1,group);
 			}
-		}	
+		}
 };
 
-c.OnChannelCueActive = function (value,group,evemt)
+c.OnChannelCueActive=function (value,group,evemt)
 {
 	if(value == 0)
 	{
@@ -1193,7 +1191,7 @@ c.OnChannelCueActive = function (value,group,evemt)
 /*==========================================================================*/
 
 /*index off by 1*/
-c.getIndex_ = function (group)
+c.getIndex_=function (group)
 {
 	if(group=="[Channel1]")
 	{
@@ -1229,7 +1227,7 @@ c.getIndex_ = function (group)
 	}
 };
 
-c.led_ = function(control,isOn,group)
+c.led_=function(control,isOn,group)
 {
 	if(isOn==1)	
 	{
@@ -1241,15 +1239,15 @@ c.led_ = function(control,isOn,group)
 	}
 };
 
-c.lOn_ = function(control,group)
+c.lOn_=function(control,group)
 {
 	var index=c.getIndex_(group);
-	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOn);'); 
+	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOn);');
 };
 
-c.lOff_ = function(control,group)
+c.lOff_=function(control,group)
 {
 
 	var index=c.getIndex_(group);
-	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOff);'); 
+	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOff);');
 };
