@@ -4,7 +4,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #run in src directory
 cd "$DIR"
 
-MIXXX_CONTROLLER_INSTALL_DIR="/usr/share/mixxx/midi"
+#mixxx 1.0
+#MIXXX_CONTROLLER_INSTALL_DIR="/usr/share/mixxx/midi"
+#mixxx 2.0
+MIXXX_CONTROLLER_INSTALL_DIR="/usr/share/mixxx/controllers"
 CONTROLLER_XML_FILENAME="Reloop RMP-3.midi.xml"
 CONTROLLER_JS_FILENAME="Reloop-RMP-3-scripts.js"
 
