@@ -5,7 +5,19 @@
 /*      Overview on Bindings:  http://lowres.ch/rmp3/index.html */
 /****************************************************************/
 
-/*//tb/130407/130520/130608/130617/130618*/
+/*//tb/130407/130520/130608/130617/130618/160704*/
+
+/*
+Important notice to save debugging time:
+
+This syntax will result in an error message (script function not found) (mixxx 1.10.1)
+	c.playTrack=function(channel, control, value, status, group)
+
+Correct syntax:
+	c.playTrack = function(channel, control, value, status, group)
+
+-> All such function definitions need SPACES around '=' !!
+*/
 
 function c() {};
 
@@ -18,6 +30,7 @@ c.channelCount_=2;
 c.function_prefix_='c';
 /*name of javascript file (this)*/
 c.js_file_='Reloop-RMP-3-scripts.js';
+/*increment only on functional changes*/
 c.script_version_='2.2';
 
 /*common midi values*/
@@ -73,7 +86,7 @@ c.nudgeEndPressed[1]=0;
 /*==========================================================================*/
 
 /*template to create map objects*/
-c.map=function(status,midino,group,key,description,option,connect)
+c.map = function(status,midino,group,key,description,option,connect)
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -99,7 +112,7 @@ c.map=function(status,midino,group,key,description,option,connect)
 		str+=control_name+'.options=option;';
 
 		/*object can express itself as xml*/
-		str+=control_name+'.xml=function()';
+		str+=control_name+'.xml = function()';
 		str+='{';
 		str+='return \'';
 		str+='<!--'+control_name+'-->';
@@ -113,7 +126,7 @@ c.map=function(status,midino,group,key,description,option,connect)
 
 		if(connect==1)
 		{
-			var str_='c.On'+key+'=function (value,group)';
+			var str_='c.On'+key+' = function(value,group)';
 			str_+='{';
 			str_+='c.led_('+midino+',value,group);';
 			str_+='};';
@@ -134,9 +147,9 @@ c.map=function(status,midino,group,key,description,option,connect)
 };
 
 /*print mixxx xml from meta data and mappings*/
-c.x=function(tag,content){return '<'+tag+'>'+content+'</'+tag+'>';};
+c.x = function(tag,content){return '<'+tag+'>'+content+'</'+tag+'>';};
 
-c.printXml=function()
+c.printXml = function()
 {
 	var d=new Date();
 	var out='<MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">';
@@ -384,10 +397,10 @@ c.map("0xe","0x5e"	,c.channel,"rate","",c.normal,0);
 /*c.printXml();*/
 
 /*==========================================================================*/
-/*common function (called by mixxx at startup/load control interface)*/
+/*common function(called by mixxx at startup/load control interface)*/
 /*==========================================================================*/
 
-c.init=function(id)
+c.init = function(id)
 {
 	print ("Initalizing Reloop RMP-3...");
 
@@ -399,8 +412,8 @@ c.init=function(id)
 
 }; /*end c.init*/
 
-/*c.setInitialValues=function(group)*/
-c.setInitialValues=function()
+/*c.setInitialValues = function(group)*/
+c.setInitialValues = function()
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -472,8 +485,8 @@ c.setInitialValues=function()
 	}/*end for channelcount*/
 }; /*end c.setInitialValues*/
 
-/*c.connectEvents=function(group)*/
-c.connectEvents=function()
+/*c.connectEvents = function(group)*/
+c.connectEvents = function()
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -496,8 +509,8 @@ c.connectEvents=function()
 	} /*end for channelcount*/
 }; /*end c.connectEvents*/
 
-/*c.resetLEDs=function(group)*/
-c.resetLEDs=function()
+/*c.resetLEDs = function(group)*/
+c.resetLEDs = function()
 {
 	for(var i=0;i<c.channelCount_;i++)
 	{
@@ -531,13 +544,13 @@ c.resetLEDs=function()
 	}
 }; /*end c.resetLEDs*/
 
-c.shutdown=function(id)
+c.shutdown = function(id)
 {
 	/*Turn all LEDs off by using init function*/
 	c.resetLEDs();
 };
 
-c.loopHalveInverse=function(channel, control, value, status, group)
+c.loopHalveInverse = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -554,7 +567,7 @@ c.loopHalveInverse=function(channel, control, value, status, group)
 	}
 };
 
-c.loopDoubleInverse=function(channel, control, value, status, group)
+c.loopDoubleInverse = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -571,7 +584,7 @@ c.loopDoubleInverse=function(channel, control, value, status, group)
 	}
 };
 
-c.stepLoopBack=function(channel, control, value, status, group)
+c.stepLoopBack = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -591,7 +604,7 @@ c.stepLoopBack=function(channel, control, value, status, group)
 	}
 };
 
-c.stepLoopForward=function(channel, control, value, status, group)
+c.stepLoopForward = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -611,7 +624,7 @@ c.stepLoopForward=function(channel, control, value, status, group)
 	}
 };
 
-c.evaluateNudgeMode=function(index)
+c.evaluateNudgeMode = function(index)
 {
 	/*start*/
 	if(c.nudgeStartPressed[index]==1 && c.nudgeEndPressed[index]==0)
@@ -634,7 +647,7 @@ c.evaluateNudgeMode=function(index)
 	}
 };
 
-c.nudgeLoopStart=function (channel, control, value, status, group)
+c.nudgeLoopStart = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -648,7 +661,7 @@ c.nudgeLoopStart=function (channel, control, value, status, group)
 	c.evaluateNudgeMode(index);
 };
 
-c.nudgeLoopEnd=function (channel, control, value, status, group)
+c.nudgeLoopEnd = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -662,7 +675,7 @@ c.nudgeLoopEnd=function (channel, control, value, status, group)
 	c.evaluateNudgeMode(index);
 };
 
-c.changeRateRange=function (channel, control, value, status, group)
+c.changeRateRange = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -707,7 +720,7 @@ c.changeRateRange=function (channel, control, value, status, group)
 	}
 }; /*end c.changeRateRange*/
 
-c.pitchZero=function (channel, control, value, status, group)
+c.pitchZero = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -720,7 +733,7 @@ c.pitchZero=function (channel, control, value, status, group)
 	}
 };
 
-c.beat_tap=function (channel, control, value, status, group)
+c.beat_tap = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -728,7 +741,7 @@ c.beat_tap=function (channel, control, value, status, group)
 	}
 };
 
-c.back_fwd=function (channel, control, value, status, group)
+c.back_fwd = function(channel, control, value, status, group)
 {
 	if(value==64)
 	{
@@ -745,7 +758,7 @@ c.back_fwd=function (channel, control, value, status, group)
 	}
 };
 
-c.playTrack=function (channel, control, value, status, group)
+c.playTrack = function(channel, control, value, status, group)
 {
 	/*no action of no song loaded to deck*/
 	if (engine.getValue(group, "duration") == 0)
@@ -775,7 +788,7 @@ c.playTrack=function (channel, control, value, status, group)
 	}
 }; /*end c.playTrack*/
 
-c.Cue=function (channel, control, value, status, group)
+c.Cue = function(channel, control, value, status, group)
 {
 	/*no action of no song loaded to deck*/
 	if (engine.getValue(group, "duration") == 0)
@@ -796,7 +809,7 @@ c.Cue=function (channel, control, value, status, group)
 	}
 };
 
-c.Scratch=function (channel, control, value, status, group)
+c.Scratch = function(channel, control, value, status, group)
 {
 	/*see hold*/
 	if(value == c.keyPressed)
@@ -816,7 +829,7 @@ c.Scratch=function (channel, control, value, status, group)
 };
 
 /*sensitivity 1*/
-c.sensitivity1=function (channel, control, value, status, group)
+c.sensitivity1 = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -829,7 +842,7 @@ c.sensitivity1=function (channel, control, value, status, group)
 };
 
 /*sensitivity 2*/
-c.sensitivity2=function (channel, control, value, status, group)
+c.sensitivity2 = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -842,7 +855,7 @@ c.sensitivity2=function (channel, control, value, status, group)
 };
 
 /*sensitivity 3*/
-c.sensitivity3=function (channel, control, value, status, group)
+c.sensitivity3 = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 	if(value == c.keyPressed)
@@ -854,7 +867,7 @@ c.sensitivity3=function (channel, control, value, status, group)
 	}
 };
 
-c.JogWheel=function (channel, control, value, status, group)
+c.JogWheel = function(channel, control, value, status, group)
 {
 	/*values +/- around 64*/
 	var jogValue=(value - 64);
@@ -899,7 +912,7 @@ c.JogWheel=function (channel, control, value, status, group)
 }; /*end c.JogWheel*/
 
 /*should distinguish playing/non-playing*/
-c.JogWheel_Hold=function (channel, control, value, status, group)
+c.JogWheel_Hold = function(channel, control, value, status, group)
 {
 	/*see scratch*/
 	var index=c.getIndex_(group);
@@ -933,13 +946,13 @@ c.JogWheel_Hold=function (channel, control, value, status, group)
 	}
 };
 
-c.JogZoom=function (channel, control, value, status, group)
+c.JogZoom = function(channel, control, value, status, group)
 {
 	/*1-6*/
 	engine.setValue(group,"waveform_zoom", ((value/127)*5+1));
 };
 
-c.PrevNextWheelShift=function (channel, control, value, status, group)
+c.PrevNextWheelShift = function(channel, control, value, status, group)
 {
 	/*ccw*/
 	if(value==63)
@@ -953,7 +966,7 @@ c.PrevNextWheelShift=function (channel, control, value, status, group)
 	}
 };
 
-c.PrevNextWheel=function (channel, control, value, status, group)
+c.PrevNextWheel = function(channel, control, value, status, group)
 {
 	var index=c.getIndex_(group);
 
@@ -1065,7 +1078,7 @@ c.PrevNextWheel=function (channel, control, value, status, group)
 	}
 }; /*end c.PrevNextWheel*/
 
-c.LoadSelectedTrack=function (channel, control, value, status, group)
+c.LoadSelectedTrack = function(channel, control, value, status, group)
 {
 	/*if pressed, will stop (if playing), load track and play at once*/
 	if(value == c.keyPressed)
@@ -1075,7 +1088,7 @@ c.LoadSelectedTrack=function (channel, control, value, status, group)
 	}
 };
 
-c.LoopIn=function (channel, control, value, status, group)
+c.LoopIn = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -1088,7 +1101,7 @@ c.LoopIn=function (channel, control, value, status, group)
 	}
 };
 
-c.LoopOut=function (channel, control, value, status, group)
+c.LoopOut = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -1096,7 +1109,7 @@ c.LoopOut=function (channel, control, value, status, group)
 	}
 };
 
-c.ReloopExit=function (channel, control, value, status, group)
+c.ReloopExit = function(channel, control, value, status, group)
 {
 	if(value == c.keyPressed)
 	{
@@ -1116,7 +1129,7 @@ c.ReloopExit=function (channel, control, value, status, group)
 /*On event methods (from engine)*/
 /*==========================================================================*/
 
-c.OnLoopEnabled=function (value,group)
+c.OnLoopEnabled = function(value,group)
 {
 	c.led_(c.i.loop_in,value,group);
 	c.led_(c.i.loop_out,value,group);
@@ -1124,7 +1137,7 @@ c.OnLoopEnabled=function (value,group)
 
 c.beatLed=0;
 
-c.OnBeatActive=function (value,group)
+c.OnBeatActive = function(value,group)
 {
 	if(value==1)
 	{
@@ -1138,27 +1151,27 @@ c.OnBeatActive=function (value,group)
 
 /*some c.Onxxx get created via map()*/
 
-c.OnHotcue1_1=function (value,group)
+c.OnHotcue1_1 = function(value,group)
 {
 	c.led_(c.i._1,value,group);
 };
 
-c.OnHotcue1_2=function (value,group)
+c.OnHotcue1_2 = function(value,group)
 {
 	c.led_(c.i._2,value,group);
 };
 
-c.OnHotcue1_3=function (value,group)
+c.OnHotcue1_3 = function(value,group)
 {
 	c.led_(c.i._3,value,group);
 };
 
-c.OnHotcue1_4=function (value,group)
+c.OnHotcue1_4 = function(value,group)
 {
 	c.led_(c.i._4,value,group);
 };
 
-c.OnChannelPlaying=function (value,group,event)
+c.OnChannelPlaying = function(value,group,event)
 {
 		if(value == 0)
 		{
@@ -1174,7 +1187,7 @@ c.OnChannelPlaying=function (value,group,event)
 		}
 };
 
-c.OnChannelCueActive=function (value,group,evemt)
+c.OnChannelCueActive = function(value,group,evemt)
 {
 	if(value == 0)
 	{
@@ -1191,7 +1204,7 @@ c.OnChannelCueActive=function (value,group,evemt)
 /*==========================================================================*/
 
 /*index off by 1*/
-c.getIndex_=function (group)
+c.getIndex_ = function(group)
 {
 	if(group=="[Channel1]")
 	{
@@ -1227,7 +1240,7 @@ c.getIndex_=function (group)
 	}
 };
 
-c.led_=function(control,isOn,group)
+c.led_ = function(control,isOn,group)
 {
 	if(isOn==1)	
 	{
@@ -1239,13 +1252,13 @@ c.led_=function(control,isOn,group)
 	}
 };
 
-c.lOn_=function(control,group)
+c.lOn_ = function(control,group)
 {
 	var index=c.getIndex_(group);
 	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOn);');
 };
 
-c.lOff_=function(control,group)
+c.lOff_ = function(control,group)
 {
 
 	var index=c.getIndex_(group);
