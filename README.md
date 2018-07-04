@@ -17,10 +17,10 @@ Install on Linux
 ----------------
 
 ```
-  git clone git://github.com/7890/rmp3.git
-  cd rmp3/controllers
-  #/usr/share/mixxx/controllers/ is assumed to be the place of controller files
-  sudo ln -s `pwd`/Reloop-RMP-3-scripts.js /usr/share/mixxx/controllers/
-  sudo ln -s `pwd`/RMP-3.midi.xml /usr/share/mixxx/controllers/
-  #(re-)start mixxx and select new controller
+  git clone https://github.com/7890/rmp3
+
+  #/usr/share/mixxx/midi/ is assumed to be the place of controller files
+  sudo cp rmp3/controllers/* /usr/share/mixxx/midi/
+
+  #(re-)start mixxx and select new controller preset 'Reloop RMP-3'
 ```
