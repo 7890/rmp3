@@ -1,0 +1,455 @@
+Mixxx Controller Documentation for Reloop RMP-3α Cross Media Player
+==================================================================
+:author: Thomas Brand
+:toc:
+:imagesdir: images
+:data-uri:
+:lang: en
+
+****************************************************************************
+Abstract: Documentation for controller bindings to be used with the DJ program 
+'Mixxx' in order to control the audio engine with 'RMP-3α' device (control surface).
+Bindings and scripts are user-contributed, the author is not related to 
+'Reloop' (TM).
+****************************************************************************
+
+Mixxx Project:
+
+* https://mixxx.org/
+
+* https://mixxx.org/wiki/doku.php/mixxxcontrols
+
+* https://mixxx.org/wiki/doku.php/midi_controller_mapping_file_format
+
+Home of this document:
+
+* https://github.com/7890/rmp3
+
+[NOTE]
+============================================================================
+This documentation refers to `Reloop-RMP-3-scripts.js` version '2.3'.
+The bindings have been tested with Mixxx version '2.1.1' on Linux. 
+============================================================================
+
+Adding RMP-3 Controller to Mixxx
+--------------------------------
+
+The `.xml` and `.js` files that make up the controller can be retrieved from github:
+https://github.com/7890/rmp3
+
+Clone the repository or download as ZIP file, then copy the two files from `rmp3/controllers` to 
+the directory where Mixxx stores controller bindings and scripts.
+
+* `Reloop RMP-3.midi.xml`
+* `Reloop-RMP-3-scripts.js`
+
+Depending on your installation the Mixxx controllers folder could be (on Linux) `/usr/share/mixxx/controllers/` or
+when running from a source tree `<mixxx-release>/res/controllers`.
+
+(Re-)start Mixxx, select the new controller preset 'Reloop RMP-3' in preferences and enable it.
+
+In order to see debug output from controllers (and to trace issues), it's worth to start Mixxx with 
+`mixxx --developer --controllerDebug`.
+
+Surface Controls Overview
+-------------------------
+
+Top view of RMP-3α
+~~~~~~~~~~~~~~~~~~
+
+image::reloop_rmp3_alpha_device_with_numbered_control_labels.png[]
+
+Notes
+~~~~~
+
+* If not otherwise indicated, actions take place on button DOWN.
+* If not otherwise indicated, button UP events are ignored.
+* If not otherwise indicated, actions will not change the rolling status.
+* 'Rolling' is the same as 'Playing back'
+* 'Not rolling' is the same as 'Paused'
+* 'Point' and 'Position' are used interchangeably
+* It's assumed that a track is loaded to the controlled deck (start playback -> track must be loaded etc.)
+
+2) Play / Pause
+~~~~~~~~~~~~~~~
+
+* If not rolling, start playback
+* If rolling, pause playback
+* If Cue play 3) is active, pressing 2) and releasing 3) then releasing 2) transfers from cue to normal playback.
+
+The button LED is connected to engine "play" status.
+
+3) Cue
+~~~~~~
+
+* Pressing button down starts playback from (previously set) cue point
+* If button is released, playback stops and playhead goes back to cue point
+* Holding shift 46) then pressing 3) assigns the cue point to the current position
+
+[NOTE]
+============================================================================
+The cue point is automatically set to start of loop when loop_in 12) is pressed
+============================================================================
+
+The button LED is connected to the down/up status of the button.
+
+4) Track wheel (rastered)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Turning wheel CW: select next track
+* Turning wheel CCW: select previous track
+* Holding shift 46) while turning CC / CCW: do the same but jump by 10 tracks for every tick
+* Push button to load track to deck and start playback
+
+[NOTE]
+============================================================================
+
+Track is loaded to the deck even if deck is already loaded and/or rolling
+
+============================================================================
+
+* Holding |<< 6) while turning 4) CC / CCW adjusts the start position of loop range
+* Holding >>| 6) while turning 4) CC / CCW adjusts the end position of loop range
+* Holding both |<< and >>| 6) while turning 4) CC / CCW moves the loop range
+
+[NOTE]
+===========================================================================
+
+The sensitivity for adjustments of the loop range can be set using 33) 34) 35)
+
+===========================================================================
+
+5) Search wheel (not rastered, snap-back)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Turning wheel CW: fast forward
+* Turning wheel CCW: rewind
+
+6) |<<, >>|
+~~~~~~~~~~~
+
+* See 4) how to use 6) to adjust the loop range
+* Holding shift 46) then pressing one of 6) moves the loop range forward or backward by the length of the loop (adjacent to previous range)
+
+7) Clock
+~~~~~~~~
+
+* Goto start (keep current rolling status)
+
+8) SGL, CNT
+~~~~~~~~~~~
+
+* Navigation (Tracks, Playlists, Crates, ...): one item down
+
+[NOTE]
+===========================================================================
+
+The next/prev impulses from track wheel 4) are bound to the context 
+selected with 8) and 9) 
+
+===========================================================================
+
+9) Bank
+~~~~~~~
+
+* Navigation (Tracks, Playlists, Crates, ...): one item up
+
+10) Device built-in: switch between 4 decks (4 MIDI channels)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This controller map only supports two decks.
+
+12) Loop in
+~~~~~~~~~~~
+
+* Set loop start at current position, also move cue point to start of loop
+
+The button LED is connected to engine "loop_enabled" status.
+
+13) Loop out
+~~~~~~~~~~~~
+
+* Set loop end at current position, activate loop if not active
+* When rolling, setting loop out immediately starts the loop
+
+The button LED is connected to engine "loop_enabled" status.
+
+14) Reloop
+~~~~~~~~~~
+
+* Toggle loop active / inactive
+* If playhead is before or inside the loop, toggling loop won't reloacate playhead
+* If playhead is after the loop range and loop is toggled to active, playhead jumps to start of loop
+
+15) Hotcue 1-4
+~~~~~~~~~~~~~~
+
+* Buttons can be either assigned or cleared
+* If button LED is off, hotcue status is cleared (ready to assign)
+* If button LED is on, hotcue is assigned (ready to play)
+* Pressing a hotcue button in cleared state assigns the hotcue (remember current playhead position)
+* Pressing a hotcue button in assigned state (LED lit) starts playback from hotcue position
+* If hotcue was triggered while paused: releasing hotcue button stops playback, playhead relocates to hotcue position
+* If hotcue was triggered while rolling: releasing hotcue button will continue to play normally
+* Holding shift 46) then pressing one of the assigned hotcues will clear it
+
+The button LEDs are connected to engine "hotcue_[1-4]_enabled" status.
+
+16) Save to
+~~~~~~~~~~~
+
+* Halves the loop range (loop end moves left)
+
+-----------------------------------------------
+
+ --------------|=========|-----------------
+                     <----
+               |====|
+
+-----------------------------------------------
+
+* Holding shift 46) then pressing 16) doubles the loop range (loop start moves left)
+
+-----------------------------------------------
+
+ --------------|=========|-----------------
+     <----------
+     |===================|
+
+-----------------------------------------------
+
+17) Sampler
+~~~~~~~~~~~
+
+* Doubles the loop range (loop end moves right)
+
+-----------------------------------------------
+
+ --------------|=========|-----------------
+                         --------->
+               |==================|
+
+-----------------------------------------------
+
+* Holding shift 46) then pressing 17) halves the loop range (loop start moves right)
+
+-----------------------------------------------
+
+ --------------|=========|-----------------
+               ---->
+                    |====|
+
+-----------------------------------------------
+
+18) Jog wheel
+~~~~~~~~~~~~~
+* Touch and turn for small pitch changes while rolling and scratch 27) disabled
+* Touch and scratch while scratch is enabled 27) while rolling
+* Touch and navigate while not rolling
+* Holding shift 46) then touching and turning jog zooms the waveform display in and out 
+
+19) Eject
+~~~~~~~~~
+* Unloads track from deck if not currently rolling
+
+20) Range
+~~~~~~~~~
+
+* Switch to next pitch range (4, 8, 16, 100%), playback speed is affected immediately
+
+21) Key lock
+~~~~~~~~~~~~
+
+* Toggle keylock
+
+The button LED is connected to engine "keylock" status.
+
+22) Pitch fader
+~~~~~~~~~~~~~~~
+* Decrease / increase pitch
+* If slider is in neutral (0%) position, pitch LED is on
+
+23) Pitch lock
+~~~~~~~~~~~~~~
+
+* Toggle pitch lock
+* If locked, ignore pitch range setting and pitch fader position (play 1:1), turn on pitch lock LED
+* If not locked, act according to pitch range settings and pitch fader position
+
+27) Scratch
+~~~~~~~~~~~
+
+* Toggle scratch on/off
+
+The button LED is connected to on/off status.
+
+28) Skid
+~~~~~~~~
+
+* Toggle repeat on/off
+
+The button LED is connected to engine "repeat" status.
+
+29) Filter
+~~~~~~~~~~
+
+* Set beat grid at current position
+* Holding shift 46) then pressing 29) toggles LED beat indication on or off
+
+The button LED is connected to engine "beat_active" status and flashes shortly on every beat (grid line).
+
+30) Phase
+~~~~~~~~~
+
+* Toggle quantize on/off
+
+The button LED is connected to engine "quantize" status.
+
+[NOTE]
+============================================================================
+Loop in/out, set cue point, set hotcues are affected by quantize (not limited to). 
+============================================================================
+
+31) Hold
+~~~~~~~~
+
+* (currently not used)
+
+32) Echo
+~~~~~~~~
+
+* (currently not used)
+
+33) Flanger
+~~~~~~~~~~~
+
+* Set sensitvity for loop adjustments and scratching to high (small movement -> a lot of change)
+
+Only one of 33), 34) and 35) can be active at a time (one LED is on, others off)
+
+34) Trans
+~~~~~~~~~
+
+* Set sensitvity for loop adjustments and scratching to medium
+
+35) Pan
+~~~~~~~
+
+* Set sensitvity for loop adjustments and scratching to low
+
+24) Pitch bend +/-
+~~~~~~~~~~~~~~~~~~
+
+* Temporarily change playback speed slightly
+
+36) 1/8, 1/4
+~~~~~~~~~~~~
+
+* (currently not used)
+
+36) 1/2
+~~~~~~~
+* Temporary pause, pause while button pressed, start playback when released
+* Playback also starts on release if playback was paused on press
+
+36) 1/4
+~~~~~~~
+* Temporary volume kill, volume 0 when button pressed, volume 100% when button released
+
+36) 1/1
+~~~~~~~
+* Short press/release: toggle EQ high kill
+* Holding the button for a certain time will make it act as a temporary toggle
+
+36) 2/1
+~~~~~~~
+* Short press/release: toggle EQ mid kill
+* Holding the button for a certain time will make it act as a temporary toggle
+
+36) 4/1
+~~~~~~~
+* Short press/release: toggle EQ low kill
+* Holding the button for a certain time will make it act as a temporary toggle
+
+37) Sync BPM
+~~~~~~~~~~~~
+
+* Sync BPM to other deck
+
+38) Tap
+~~~~~~~
+
+* Tap along the beat to adjust BPM
+
+46) Shift
+~~~~~~~~~
+
+* Main modifier for other buttons to assign more than one action
+* RMP-3 sends different MIDI events for controls depending on shift
+
+
+Adding a new mapping to Reloop-RMP-3-scripts.js
+-----------------------------------------------
+
+There are still plenty of unused buttons / controls that aren't bound to anything.
+In order to add a new function to a yet unused control, these are the basic steps to proceed:
+
+1) Find unused button or button combination in `src/controller.js`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Unused means it's a defined key in the interface section and not yet bound with `c.map()` in the mapping section.
+For instance `eject_shift` is a currently an unbound interface item.
+
+2) Add new mapping to `src/controller.js`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Example to bind built-in function "repeat" which is a normal binding to the interface button `c.i.skid`:
+------------------------------------------------------------
+c.Map("0x9", c.i.skid, c.channel, "repeat", "n/a", c.normal, 1);
+------------------------------------------------------------
+
+Example to bind custom (to be implemented) function "c.TemporaryPause" which is a `c.scriptBinding`:
+------------------------------------------------------------
+c.Map("0x9", c.i.b1_2, c.channel, "c.TemporaryPause", "n/a", c.scriptBinding, 0);
+------------------------------------------------------------
+
+3) If the mapping does not use a built-in function, implement the referenced function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+------------------------------------------------------------
+c.TemporaryPause = function(channel, control, value, status, group)
+{
+	/* ... */
+};
+------------------------------------------------------------
+
+4) Run `src/dist.sh` to create the bindings file (`.xml`) from `src/controller.js`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This step loads `src/controller.js` into a JavaScript environment (using a small Java program) 
+then calls its `c.PrintXml()` function which prints all controls as XML. The output is tested 
+rudimentarily (for wellformedness) and then written to `controllers/Reloop RMP-3.midi.xml` along 
+with the script `controllers/Reloop-RMP-3-scripts.js`.
+
+5) Copy files from `controllers/*` to Mixxx controllers folder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[NOTE]
+============================================================================
+Once enabled controller maps are stored in `~/.mixxx/controllers/`.
+In some cases it might be useful to clear this folder to unconfigure any controller.
+============================================================================
+
+Download Links
+--------------
+
+* https://github.com/mixxxdj/mixxx/archive/release-2.1.1.tar.gz
+
+* https://github.com/7890/rmp3/archive/master.zip
+
+[NOTE]
+============================================================================
+
+asciidoc (http://www.methods.co.nz/asciidoc/) was used to render this document
+
+============================================================================
