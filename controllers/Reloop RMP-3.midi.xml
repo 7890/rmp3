@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">
-  <!-- created Wed Jul 04 2018 18:57:27 GMT+0200 (CEST) -->
-  <!-- script version 2.2 -->
+  <!-- created Mon Jul 09 2018 23:55:27 GMT+0200 (CEST) -->
+  <!-- script version 2.3 -->
   <info>
     <name>Reloop RMP-3</name>
     <author>Thomas Brand</author>
@@ -18,7 +18,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.playTrack</key>
+        <key>c.PlayTrack</key>
         <options>
           <script-binding/>
         </options>
@@ -29,7 +29,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.playTrack</key>
+        <key>c.PlayTrack</key>
         <options>
           <script-binding/>
         </options>
@@ -52,6 +52,72 @@
         <description/>
         <group>[Channel2]</group>
         <key>c.Cue</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x46_0-->
+      <control>
+        <midino>0x46</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>cue_set</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x46_1-->
+      <control>
+        <midino>0x46</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>cue_set</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x2a_0-->
+      <control>
+        <midino>0x2a</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.TemporaryPause</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x2a_1-->
+      <control>
+        <midino>0x2a</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.TemporaryPause</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x24_0-->
+      <control>
+        <midino>0x24</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.TemporaryVolumeKill</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x24_1-->
+      <control>
+        <midino>0x24</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.TemporaryVolumeKill</key>
         <options>
           <script-binding/>
         </options>
@@ -210,28 +276,6 @@
           <normal/>
         </options>
       </control>
-      <!--_0x19_0-->
-      <control>
-        <midino>0x19</midino>
-        <status>0x90</status>
-        <description/>
-        <group>[Channel1]</group>
-        <key>start</key>
-        <options>
-          <normal/>
-        </options>
-      </control>
-      <!--_0x19_1-->
-      <control>
-        <midino>0x19</midino>
-        <status>0x91</status>
-        <description/>
-        <group>[Channel2]</group>
-        <key>start</key>
-        <options>
-          <normal/>
-        </options>
-      </control>
       <!--_0x25_0-->
       <control>
         <midino>0x25</midino>
@@ -272,6 +316,28 @@
         <description/>
         <group>[Playlist]</group>
         <key>SelectNextPlaylist</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x19_0-->
+      <control>
+        <midino>0x19</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>start</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x19_1-->
+      <control>
+        <midino>0x19</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>start</key>
         <options>
           <normal/>
         </options>
@@ -480,9 +546,9 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>loop_halve</key>
+        <key>c.LoopHalve</key>
         <options>
-          <normal/>
+          <script-binding/>
         </options>
       </control>
       <!--_0x04_1-->
@@ -491,9 +557,9 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>loop_halve</key>
+        <key>c.LoopHalve</key>
         <options>
-          <normal/>
+          <script-binding/>
         </options>
       </control>
       <!--_0x28_0-->
@@ -502,9 +568,9 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>loop_double</key>
+        <key>c.LoopDouble</key>
         <options>
-          <normal/>
+          <script-binding/>
         </options>
       </control>
       <!--_0x28_1-->
@@ -513,9 +579,9 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>loop_double</key>
+        <key>c.LoopDouble</key>
         <options>
-          <normal/>
+          <script-binding/>
         </options>
       </control>
       <!--_0x43_0-->
@@ -524,7 +590,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.loopDoubleInverse</key>
+        <key>c.LoopDoubleInverse</key>
         <options>
           <script-binding/>
         </options>
@@ -535,7 +601,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.loopDoubleInverse</key>
+        <key>c.LoopDoubleInverse</key>
         <options>
           <script-binding/>
         </options>
@@ -546,7 +612,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.loopHalveInverse</key>
+        <key>c.LoopHalveInverse</key>
         <options>
           <script-binding/>
         </options>
@@ -557,7 +623,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.loopHalveInverse</key>
+        <key>c.LoopHalveInverse</key>
         <options>
           <script-binding/>
         </options>
@@ -634,7 +700,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.JogWheel_Hold</key>
+        <key>c.JogWheelHold</key>
         <options>
           <script-binding/>
         </options>
@@ -645,7 +711,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.JogWheel_Hold</key>
+        <key>c.JogWheelHold</key>
         <options>
           <script-binding/>
         </options>
@@ -672,13 +738,35 @@
           <script-binding/>
         </options>
       </control>
+      <!--_0x50_0-->
+      <control>
+        <midino>0x50</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.ToggleBlinkBeats</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x50_1-->
+      <control>
+        <midino>0x50</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.ToggleBlinkBeats</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
       <!--_0x13_0-->
       <control>
         <midino>0x13</midino>
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.nudgeLoopStart</key>
+        <key>c.NudgeLoopStart</key>
         <options>
           <script-binding/>
         </options>
@@ -689,7 +777,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.nudgeLoopStart</key>
+        <key>c.NudgeLoopStart</key>
         <options>
           <script-binding/>
         </options>
@@ -700,7 +788,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.nudgeLoopEnd</key>
+        <key>c.NudgeLoopEnd</key>
         <options>
           <script-binding/>
         </options>
@@ -711,7 +799,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.nudgeLoopEnd</key>
+        <key>c.NudgeLoopEnd</key>
         <options>
           <script-binding/>
         </options>
@@ -722,7 +810,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.stepLoopBack</key>
+        <key>c.StepLoopBack</key>
         <options>
           <script-binding/>
         </options>
@@ -733,7 +821,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.stepLoopBack</key>
+        <key>c.StepLoopBack</key>
         <options>
           <script-binding/>
         </options>
@@ -744,7 +832,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.stepLoopForward</key>
+        <key>c.StepLoopForward</key>
         <options>
           <script-binding/>
         </options>
@@ -755,7 +843,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.stepLoopForward</key>
+        <key>c.StepLoopForward</key>
         <options>
           <script-binding/>
         </options>
@@ -810,9 +898,9 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.ReloopExit</key>
+        <key>reloop_toggle</key>
         <options>
-          <script-binding/>
+          <normal/>
         </options>
       </control>
       <!--_0x22_1-->
@@ -821,9 +909,9 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.ReloopExit</key>
+        <key>reloop_toggle</key>
         <options>
-          <script-binding/>
+          <normal/>
         </options>
       </control>
       <!--_0x1a_0-->
@@ -832,7 +920,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.changeRateRange</key>
+        <key>c.ChangeRateRange</key>
         <options>
           <script-binding/>
         </options>
@@ -843,7 +931,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.changeRateRange</key>
+        <key>c.ChangeRateRange</key>
         <options>
           <script-binding/>
         </options>
@@ -854,7 +942,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.pitchZero</key>
+        <key>c.PitchZero</key>
         <options>
           <script-binding/>
         </options>
@@ -865,7 +953,29 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.pitchZero</key>
+        <key>c.PitchZero</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x0e_0-->
+      <control>
+        <midino>0x0e</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.TogglePitchLock</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x0e_1-->
+      <control>
+        <midino>0x0e</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.TogglePitchLock</key>
         <options>
           <script-binding/>
         </options>
@@ -876,7 +986,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.beat_tap</key>
+        <key>c.BeatTap</key>
         <options>
           <script-binding/>
         </options>
@@ -887,7 +997,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.beat_tap</key>
+        <key>c.BeatTap</key>
         <options>
           <script-binding/>
         </options>
@@ -898,7 +1008,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.sensitivity1</key>
+        <key>c.Sensitivity1</key>
         <options>
           <script-binding/>
         </options>
@@ -909,7 +1019,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.sensitivity1</key>
+        <key>c.Sensitivity1</key>
         <options>
           <script-binding/>
         </options>
@@ -920,7 +1030,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.sensitivity2</key>
+        <key>c.Sensitivity2</key>
         <options>
           <script-binding/>
         </options>
@@ -931,7 +1041,7 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.sensitivity2</key>
+        <key>c.Sensitivity2</key>
         <options>
           <script-binding/>
         </options>
@@ -942,7 +1052,7 @@
         <status>0x90</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.sensitivity3</key>
+        <key>c.Sensitivity3</key>
         <options>
           <script-binding/>
         </options>
@@ -953,7 +1063,51 @@
         <status>0x91</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.sensitivity3</key>
+        <key>c.Sensitivity3</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x1b_0-->
+      <control>
+        <midino>0x1b</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>eject</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x1b_1-->
+      <control>
+        <midino>0x1b</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>eject</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x32_0-->
+      <control>
+        <midino>0x32</midino>
+        <status>0xb0</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.PrevNextWheel</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x32_1-->
+      <control>
+        <midino>0x32</midino>
+        <status>0xb1</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.PrevNextWheel</key>
         <options>
           <script-binding/>
         </options>
@@ -980,24 +1134,24 @@
           <script-binding/>
         </options>
       </control>
-      <!--_0x32_0-->
+      <!--_0x35_0-->
       <control>
-        <midino>0x32</midino>
+        <midino>0x35</midino>
         <status>0xb0</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.PrevNextWheel</key>
+        <key>c.JogWheel</key>
         <options>
           <script-binding/>
         </options>
       </control>
-      <!--_0x32_1-->
+      <!--_0x35_1-->
       <control>
-        <midino>0x32</midino>
+        <midino>0x35</midino>
         <status>0xb1</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.PrevNextWheel</key>
+        <key>c.JogWheel</key>
         <options>
           <script-binding/>
         </options>
@@ -1024,35 +1178,13 @@
           <script-binding/>
         </options>
       </control>
-      <!--_0x35_0-->
-      <control>
-        <midino>0x35</midino>
-        <status>0xb0</status>
-        <description/>
-        <group>[Channel1]</group>
-        <key>c.JogWheel</key>
-        <options>
-          <script-binding/>
-        </options>
-      </control>
-      <!--_0x35_1-->
-      <control>
-        <midino>0x35</midino>
-        <status>0xb1</status>
-        <description/>
-        <group>[Channel2]</group>
-        <key>c.JogWheel</key>
-        <options>
-          <script-binding/>
-        </options>
-      </control>
       <!--_0x15_0-->
       <control>
         <midino>0x15</midino>
         <status>0xb0</status>
         <description/>
         <group>[Channel1]</group>
-        <key>c.back_fwd</key>
+        <key>c.BackFwd</key>
         <options>
           <script-binding/>
         </options>
@@ -1063,7 +1195,7 @@
         <status>0xb1</status>
         <description/>
         <group>[Channel2]</group>
-        <key>c.back_fwd</key>
+        <key>c.BackFwd</key>
         <options>
           <script-binding/>
         </options>
@@ -1074,9 +1206,9 @@
         <status>0xe0</status>
         <description/>
         <group>[Channel1]</group>
-        <key>rate</key>
+        <key>c.Rate</key>
         <options>
-          <normal/>
+          <script-binding/>
         </options>
       </control>
       <!--_0x5e_1-->
@@ -1085,9 +1217,9 @@
         <status>0xe1</status>
         <description/>
         <group>[Channel2]</group>
-        <key>rate</key>
+        <key>c.Rate</key>
         <options>
-          <normal/>
+          <script-binding/>
         </options>
       </control>
     </controls>

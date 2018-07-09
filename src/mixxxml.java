@@ -38,7 +38,7 @@ class mixxxml
 		sScriptFile=sFile;
 		loadScript(sScriptFile);
 
-		js_eval(sFunctionPrefix+".printXml();");
+		js_eval(sFunctionPrefix+".PrintXml();");
 
 		System.exit(0);
 	}
@@ -115,7 +115,7 @@ class mixxxml
 				sLine=reader.readLine();
 				if (sLine!=null)
 				{
-					content.append(sLine);
+					content.append(sLine+"\n");
 				}
 			}
 			return content.toString();

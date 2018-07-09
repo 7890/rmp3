@@ -1,37 +1,43 @@
 /****************************************************************/
 /*      Reloop RMP-3 Cross Media Player controller script v2.2  */
 /*      Feel free to tweak!                                     */
-/*      Works best with Mixxx version 1.11.x                    */
-/*      Overview on Bindings:  http://lowres.ch/rmp3/index.html */
+/*      Works best with Mixxx version 2.1.x                     */
+/*      Overview on Bindings: https://github.com/7890/          */
 /****************************************************************/
 
 /*//tb/130407/130520/130608/130617/130618/160704*/
 
 /*
-Important notice to save debugging time:
+At least one function only available in Mixxx v 2.1.0 is used in this script.
+
+See also doc/mixxx_controller_documentation__reloop_rmp3_alpha.asciidoc.
+
+Important notice to save debugging time when adding new functions:
 
 This syntax will result in an error message (script function not found) (mixxx 1.10.1)
-	c.playTrack=function(channel, control, value, status, group)
+	c.PlayTrack=function(channel, control, value, status, group)
 
 Correct syntax:
-	c.playTrack = function(channel, control, value, status, group)
+	c.PlayTrack = function(channel, control, value, status, group)
 
 -> All such function definitions need SPACES around '=' !!
+
+Don't forget to end functions with a ';' after the '}'
 */
 
 function c() {};
 
 /*needed in xml*/
-c.name_='Reloop RMP-3';
-c.author_='Thomas Brand';
-c.description_='Custom Bindings for Reloop RMP-3 Cross Media Player';
-c.controller_id_='RMP-3';
-c.channelCount_=2;
-c.function_prefix_='c';
+c.controllerName='Reloop RMP-3';
+c.author='Thomas Brand';
+c.description='Custom Bindings for Reloop RMP-3 Cross Media Player';
+c.controllerId='RMP-3';
+c.channelCount=2;
+c.functionPrefix='c';
 /*name of javascript file (this)*/
-c.js_file_='Reloop-RMP-3-scripts.js';
+c.jsFile='Reloop-RMP-3-scripts.js';
 /*increment only on functional changes*/
-c.script_version_='2.2';
+c.scriptVersion='2.3';
 
 /*common midi values*/
 c.ledOn=0x7F;
@@ -42,7 +48,7 @@ c.keyUp=0x00;
 /*array holding all control 'objects'*/
 c.controls=new Array();
 
-c.script_binding='<script-binding/>';
+c.scriptBinding='<script-binding/>';
 c.normal='<normal/>';
 c.channel='[Channel]';
 c.playlist='[Playlist]';
@@ -54,30 +60,56 @@ c.rateRange[1]=0.08;
 c.rateRange[2]=0.16;
 c.rateRange[3]=1.00;
 
-c.currentRateRange=new Array(c.channelCount_);
+c.currentRateRange=new Array(c.channelCount);
 c.currentRateRange[0]=1;
 c.currentRateRange[1]=1;
 
-c.scratchMode=new Array(c.channelCount_);
+c.pitchAtZero=new Array(c.channelCount);
+c.pitchAtZero[0]=0;
+c.pitchAtZero[1]=0;
+
+c.pitchLocked=new Array(c.channelCount);
+c.pitchLocked[0]=0;
+c.pitchLocked[1]=0;
+
+c.lastPitch=new Array(c.channelCount);
+c.lastPitch[0]=0;
+c.lastPitch[1]=0;
+
+c.playDown=new Array(c.channelCount);
+c.playDown[0]=0;
+c.playDown[1]=0;
+
+c.cueDown=new Array(c.channelCount);
+c.cueDown[0]=0;
+c.cueDown[1]=0;
+
+/*to disable blinking led on every beat, set this to 0*/
+/*hit filter_shift '0x50' to toggle on/off*/
+c.blinkBeats=new Array(c.channelCount);
+c.blinkBeats[0]=1;
+c.blinkBeats[1]=1;
+
+c.scratchMode=new Array(c.channelCount);
 c.scratchMode[0]=0;
 c.scratchMode[1]=0;
 
 /*1 (fast) - 3 (slow)*/
 /*used for jog scratch and loop nudge*/
-c.sensitivity=new Array(c.channelCount_);
+c.sensitivity=new Array(c.channelCount);
 c.sensitivity[0]=1;
 c.sensitivity[1]=1;
 
 /*0: none, 1: start, 2: end, 3: both*/
-c.nudgeMode=new Array(c.channelCount_);
+c.nudgeMode=new Array(c.channelCount);
 c.nudgeMode[0]=0;
 c.nudgeMode[1]=0;
 
-c.nudgeStartPressed=new Array(c.channelCount_);
+c.nudgeStartPressed=new Array(c.channelCount);
 c.nudgeStartPressed[0]=0;
 c.nudgeStartPressed[1]=0;
 
-c.nudgeEndPressed=new Array(c.channelCount_);
+c.nudgeEndPressed=new Array(c.channelCount);
 c.nudgeEndPressed[0]=0;
 c.nudgeEndPressed[1]=0;
 
@@ -86,9 +118,9 @@ c.nudgeEndPressed[1]=0;
 /*==========================================================================*/
 
 /*template to create map objects*/
-c.map = function(status,midino,group,key,description,option,connect)
+c.Map = function(status, midino, group, key, description, option, connect)
 {
-	for(var i=0;i<c.channelCount_;i++)
+	for(var i=0;i<c.channelCount;i++)
 	{
 		var control_name='_'+midino+'_'+i;
 
@@ -126,13 +158,13 @@ c.map = function(status,midino,group,key,description,option,connect)
 
 		if(connect==1)
 		{
-			var str_='c.On'+key+' = function(value,group)';
+			var str_='c.On'+key+' = function(value, group)';
 			str_+='{';
-			str_+='c.led_('+midino+',value,group);';
+			str_+='c.LED('+midino+', value, group);';
 			str_+='};';
 
 			/*group,key,callback*/
-			str_+='engine.connectControl( "'+group_+'","'+key+'","c.On'+key+'");';
+			str_+='engine.connectControl( "'+group_+'", "'+key+'", "c.On'+key+'");';
 
 			/*print(str_);*/
 			eval(str_);
@@ -147,23 +179,23 @@ c.map = function(status,midino,group,key,description,option,connect)
 };
 
 /*print mixxx xml from meta data and mappings*/
-c.x = function(tag,content){return '<'+tag+'>'+content+'</'+tag+'>';};
+c.X = function(tag, content){return '<'+tag+'>'+content+'</'+tag+'>';};
 
-c.printXml = function()
+c.PrintXml = function()
 {
 	var d=new Date();
 	var out='<MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">';
 	out+='<!-- created '+d+' -->';
-	out+='<!-- script version '+c.script_version_+' -->';
+	out+='<!-- script version '+c.scriptVersion+' -->';
 
-	out+=c.x('info',
-		c.x('name',c.name_)
-		+c.x('author',c.author_)
-		+c.x('description',c.description_)
+	out+=c.X('info',
+		c.X('name', c.controllerName)
+		+c.X('author', c.author)
+		+c.X('description', c.description)
 	);
 
-	out+='<controller id="'+c.controller_id_+'">';
-	out+=c.x('scriptfiles','<file functionprefix="'+c.function_prefix_+'" filename="'+c.js_file_+'"/>');
+	out+='<controller id="'+c.controllerId+'">';
+	out+=c.X('scriptfiles','<file functionprefix="'+c.functionPrefix+'" filename="'+c.jsFile+'"/>');
 	out+='<controls>';
 
 	/*engine.error(c.controls.length);*/
@@ -193,10 +225,11 @@ c.i=
 	,jog_y:			'0x39' /*cc: ccw: <=0x3f (63)    cw: >=0x41 (65)*/
 
 	,track_wheel:		'0x32' /*cc: 0x3f: ccw  0x41: cw*/
+	,track_wheel_shift:	'0x71'
 	,track:			'0x2b' /*press*/
 
 /*pitchbend event*/
-	,pitch_slider:		'0xe0'
+	,pitch_slider:		'0x5e' /*'0xe0'*/
 
 	,pitch_slider_center:	'0x26'
 	,search:		'0x15' /*cc: center: 0x40 (64)*/
@@ -331,228 +364,251 @@ c.i=
 /*note that channel is not defined 0x9() and there is no group numbering [Channel()]*/
 
 /*~ midino, status, group, key, description, options, connect*/
-c.map("0x9",c.i.play_pause,c.channel,"c.playTrack","",c.script_binding,0);
-c.map("0x9",c.i.cue	,c.channel,"c.Cue","",c.script_binding,0);
+c.Map("0x9",c.i.play_pause	,c.channel, "c.PlayTrack", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.cue		,c.channel, "c.Cue", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.cue_shift	,c.channel, "cue_set", "", c.normal, 0);
+c.Map("0x9",c.i.b1_2		,c.channel, "c.TemporaryPause", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.b3_4		,c.channel, "c.TemporaryVolumeKill", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.b1_1		,c.channel, "filterHighKill", "", c.normal, 0);
+c.Map("0x9",c.i.b2_1		,c.channel, "filterMidKill", "", c.normal, 0);
+c.Map("0x9",c.i.b4_1		,c.channel, "filterLowKill", "", c.normal, 0);
+c.Map("0x9",c.i.skid		,c.channel, "repeat", "", c.normal, 1);
+c.Map("0x9",c.i.filter		,c.channel, "beats_translate_curpos", "", c.normal, 1);
+c.Map("0x9",c.i.phase		,c.channel, "quantize", "", c.normal, 1);
+c.Map("0x9",c.i.keylock		,c.channel, "keylock", "", c.normal, 1);
+c.Map("0x9",c.i.bank_p		,c.playlist, "SelectPrevPlaylist", "", c.normal, 0);
+c.Map("0x9",c.i.sgl_ctn		,c.playlist, "SelectNextPlaylist", "", c.normal, 0);
+c.Map("0x9",c.i.time		,c.channel, "start", "", c.normal, 0);
+c.Map("0x9",c.i._1		,c.channel, "hotcue_1_activate", "", c.normal, 0);
+c.Map("0x9",c.i._2		,c.channel, "hotcue_2_activate", "", c.normal, 0);
+c.Map("0x9",c.i._3		,c.channel, "hotcue_3_activate", "", c.normal, 0);
+c.Map("0x9",c.i._4		,c.channel, "hotcue_4_activate", "", c.normal, 0);
+c.Map("0x9",c.i._1_shift	,c.channel, "hotcue_1_clear", "", c.normal, 0);
+c.Map("0x9",c.i._2_shift	,c.channel, "hotcue_2_clear", "", c.normal, 0);
+c.Map("0x9",c.i._3_shift	,c.channel, "hotcue_3_clear", "", c.normal, 0);
+c.Map("0x9",c.i._4_shift	,c.channel, "hotcue_4_clear", "", c.normal, 0);
+c.Map("0x9",c.i.bpm		,c.channel, "beatsync_tempo", "", c.normal, 0);
+c.Map("0x9",c.i.save_to		,c.channel, "c.LoopHalve", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.sampler		,c.channel, "c.LoopDouble", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.save_to_shift	,c.channel, "c.LoopDoubleInverse", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.sampler_shift	,c.channel, "c.LoopHalveInverse", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.minus		,c.channel, "rate_temp_down_small", "", c.normal, 0);
+c.Map("0x9",c.i.plus		,c.channel, "rate_temp_up_small", "", c.normal, 0);
+c.Map("0x9",c.i.track		,c.channel, "c.LoadSelectedTrack", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.jog_top		,c.channel, "c.JogWheelHold", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.scratch		,c.channel, "c.Scratch", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.filter_shift	,c.channel, "c.ToggleBlinkBeats", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.prev		,c.channel, "c.NudgeLoopStart", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.next		,c.channel, "c.NudgeLoopEnd", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.prev_shift	,c.channel, "c.StepLoopBack", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.next_shift	,c.channel, "c.StepLoopForward", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.loop_in		,c.channel, "c.LoopIn", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.loop_out	,c.channel, "c.LoopOut", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.reloop		,c.channel, "reloop_toggle", "", c.normal, 0);
+c.Map("0x9",c.i.percent		,c.channel, "c.ChangeRateRange", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.pitch_slider_center,c.channel, "c.PitchZero", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.pitch		,c.channel, "c.TogglePitchLock", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.tap		,c.channel, "c.BeatTap", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.flanger		,c.channel, "c.Sensitivity1", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.trans		,c.channel, "c.Sensitivity2", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.pan		,c.channel, "c.Sensitivity3", "", c.scriptBinding, 0);
+c.Map("0x9",c.i.eject		,c.channel, "eject", "", c.normal, 0);
 
-c.map("0x9",c.i.b1_1	,c.channel,"filterHighKill","",c.normal,1);
-c.map("0x9",c.i.b2_1	,c.channel,"filterMidKill","",c.normal,1);
-c.map("0x9",c.i.b4_1	,c.channel,"filterLowKill","",c.normal,1);
-c.map("0x9",c.i.skid	,c.channel,"repeat","",c.normal,1);
-c.map("0x9",c.i.filter	,c.channel,"beats_translate_curpos","",c.normal,1);
-c.map("0x9",c.i.phase	,c.channel,"quantize","",c.normal,1);
-c.map("0x9",c.i.keylock	,c.channel,"keylock","",c.normal,1);
+c.Map("0xb",c.i.track_wheel	,c.channel, "c.PrevNextWheel", "", c.scriptBinding, 0);
+c.Map("0xb",c.i.track_wheel_shift,c.playlist, "c.PrevNextWheelShift", "", c.scriptBinding, 0);
+c.Map("0xb",c.i.jog		,c.channel, "c.JogWheel", "", c.scriptBinding, 0);
+c.Map("0xb",c.i.jog_shift	,c.channel, "c.JogZoom", "", c.scriptBinding, 0);
+c.Map("0xb",c.i.search		,c.channel, "c.BackFwd", "", c.scriptBinding, 0);
 
-c.map("0x9",c.i.time	,c.channel,"start","",c.normal,0);
-c.map("0x9",c.i.bank_p	,c.playlist,"SelectPrevPlaylist","",c.normal,0);
-c.map("0x9",c.i.sgl_ctn	,c.playlist,"SelectNextPlaylist","",c.normal,0);
-
-c.map("0x9",c.i._1	,c.channel,"hotcue_1_activate","",c.normal,0);
-c.map("0x9",c.i._2	,c.channel,"hotcue_2_activate","",c.normal,0);
-c.map("0x9",c.i._3	,c.channel,"hotcue_3_activate","",c.normal,0);
-c.map("0x9",c.i._4	,c.channel,"hotcue_4_activate","",c.normal,0);
-c.map("0x9",c.i._1_shift,c.channel,"hotcue_1_clear","",c.normal,0);
-c.map("0x9",c.i._2_shift,c.channel,"hotcue_2_clear","",c.normal,0);
-c.map("0x9",c.i._3_shift,c.channel,"hotcue_3_clear","",c.normal,0);
-c.map("0x9",c.i._4_shift,c.channel,"hotcue_4_clear","",c.normal,0);
-c.map("0x9",c.i.bpm,c.channel,"beatsync_tempo","",c.normal,0);
-
-c.map("0x9",c.i.save_to	,c.channel,"loop_halve","",c.normal,0);
-c.map("0x9",c.i.sampler	,c.channel,"loop_double","",c.normal,0);
-
-/*note inverse mapping*/
-c.map("0x9",c.i.save_to_shift	,c.channel,"c.loopDoubleInverse","",c.script_binding,0);
-c.map("0x9",c.i.sampler_shift	,c.channel,"c.loopHalveInverse","",c.script_binding,0);
-
-c.map("0x9",c.i.minus	,c.channel,"rate_temp_down_small","",c.normal,0);
-c.map("0x9",c.i.plus	,c.channel,"rate_temp_up_small","",c.normal,0);
-
-c.map("0x9",c.i.track	,c.channel,"c.LoadSelectedTrack","",c.script_binding,0);
-c.map("0x9",c.i.jog_top	,c.channel,"c.JogWheel_Hold","",c.script_binding,0);
-c.map("0x9",c.i.scratch	,c.channel,"c.Scratch","",c.script_binding,0);
-c.map("0x9",c.i.prev	,c.channel,"c.nudgeLoopStart","",c.script_binding,0);
-c.map("0x9",c.i.next	,c.channel,"c.nudgeLoopEnd","",c.script_binding,0);
-
-c.map("0x9",c.i.prev_shift,c.channel,"c.stepLoopBack","",c.script_binding,0);
-c.map("0x9",c.i.next_shift,c.channel,"c.stepLoopForward","",c.script_binding,0);
-
-c.map("0x9",c.i.loop_in	,c.channel,"c.LoopIn","",c.script_binding,0);
-c.map("0x9",c.i.loop_out,c.channel,"c.LoopOut","",c.script_binding,0);
-c.map("0x9",c.i.reloop	,c.channel,"c.ReloopExit","",c.script_binding,0);
-c.map("0x9",c.i.percent	,c.channel,"c.changeRateRange","",c.script_binding,0);
-c.map("0x9",c.i.pitch_slider_center,c.channel,"c.pitchZero","",c.script_binding,0);
-c.map("0x9",c.i.tap	,c.channel,"c.beat_tap","",c.script_binding,0);
-c.map("0x9",c.i.flanger	,c.channel,"c.sensitivity1","",c.script_binding,0);
-c.map("0x9",c.i.trans	,c.channel,"c.sensitivity2","",c.script_binding,0);
-c.map("0x9",c.i.pan	,c.channel,"c.sensitivity3","",c.script_binding,0);
-
-c.map("0xb","0x71",c.playlist,"c.PrevNextWheelShift","",c.script_binding,0);
-c.map("0xb",c.i.track_wheel,c.channel,"c.PrevNextWheel","",c.script_binding,0);
-c.map("0xb",c.i.jog_shift,c.channel,"c.JogZoom","",c.script_binding,0);
-c.map("0xb",c.i.jog	,c.channel,"c.JogWheel","",c.script_binding,0);
-c.map("0xb",c.i.search	,c.channel,"c.back_fwd","",c.script_binding,0);
-
-c.map("0xe","0x5e"	,c.channel,"rate","",c.normal,0);
+c.Map("0xe",c.i.pitch_slider	,c.channel, "c.Rate", "", c.scriptBinding, 0);
 
 /*javascript host can call this method to get xml*/
 /*c.printXml();*/
 
 /*==========================================================================*/
-/*common function(called by mixxx at startup/load control interface)*/
+/*c.init: common function (called by mixxx at startup/load control interface)*/
 /*==========================================================================*/
-
 c.init = function(id)
 {
-	print ("Initalizing Reloop RMP-3...");
+	print("Initalizing Reloop RMP-3...");
 
-	c.resetLEDs();
-	c.connectEvents();
-	c.setInitialValues();
+	c.ResetLEDs();
+	c.ConnectEvents();
+	c.SetInitialValues();
 
 	print("RPM-3 READY.");
 
 }; /*end c.init*/
 
-/*c.setInitialValues = function(group)*/
-c.setInitialValues = function()
+/*==========================================================================*/
+/*c.shutdown: common function (called by mixxx)
+/*==========================================================================*/
+c.shutdown = function(id)
 {
-	for(var i=0;i<c.channelCount_;i++)
+	/*Turn all LEDs off by using init function*/
+	c.ResetLEDs();
+	print("Bye!");
+};
+
+c.SetInitialValues = function()
+{
+	for(var i=0;i<c.channelCount;i++)
 	{
 		var group='[Channel'+(i+1)+']';
 
-		var index=c.getIndex_(group);
+		var index=c.GetIndex(group);
 
 		/*read current states to initially set indications*/
 		/*+/- 8%*/
-		engine.setValue(group,"rateRange",c.rateRange[c.currentRateRange[index]]);
-		engine.setValue(group,"rate_dir",-1);
+		engine.setValue(group, "rateRange", c.rateRange[c.currentRateRange[index]]);
+		engine.setValue(group, "rate_dir", -1);
 
 		/*turn on defaults*/
 		/*pitch 8%*/
-		c.led_(c.i.pitch_8,1,group);
+		c.LED(c.i.pitch_8, 1, group);
 
 		/*sensitivity 1*/
-		c.led_(c.i.flanger,1,group);
+		c.LED(c.i.flanger, 1, group);
 
-		if(engine.getValue(group,"play"))
+		if(engine.getValue(group, "play"))
 		{
-			c.led_(c.i.play_pause,1,group);
+			c.LED(c.i.play_pause, 1, group);
 		}
-		if(engine.getValue(group,"filterHighKill"))
+		if(engine.getValue(group, "filterHighKill"))
 		{
-			c.led_(c.i.b1_1,1,group);
+			c.LED(c.i.b1_1, 1, group);
 		}
-		if(engine.getValue(group,"filterMidKill"))
+		if(engine.getValue(group, "filterMidKill"))
 		{
-			c.led_(c.i.b2_1,1,group);
+			c.LED(c.i.b2_1, 1, group);
 		}
-		if(engine.getValue(group,"filterLowKill"))
+		if(engine.getValue(group, "filterLowKill"))
 		{
-			c.led_(c.i.b4_1,1,group);
+			c.LED(c.i.b4_1, 1, group);
 		}
-		if(engine.getValue(group,"keylock"))
+		if(engine.getValue(group, "keylock"))
 		{
-			c.led_(c.i.keylock,1,group);
+			c.LED(c.i.keylock, 1, group);
 		}
-		if(engine.getValue(group,"repeat"))
+		if(engine.getValue(group, "repeat"))
 		{
-			c.led_(c.i.skid,1,group);
+			c.LED(c.i.skid, 1, group);
 		}
-		if(engine.getValue(group,"quantize"))
+		if(engine.getValue(group, "quantize"))
 		{
-			c.led_(c.i.phase,1,group);
+			c.LED(c.i.phase, 1, group);
 		}
-		if(engine.getValue(group,"hotcue_1_enabled"))
+		if(engine.getValue(group, "hotcue_1_enabled"))
 		{
-			c.led_(c.i._1,1,group);
+			c.LED(c.i._1, 1, group);
 		}
-		if(engine.getValue(group,"hotcue_2_enabled"))
+		if(engine.getValue(group, "hotcue_2_enabled"))
 		{
-			c.led_(c.i._2,1,group);
+			c.LED(c.i._2, 1, group);
 		}
-		if(engine.getValue(group,"hotcue_3_enabled"))
+		if(engine.getValue(group, "hotcue_3_enabled"))
 		{
-			c.led_(c.i._3,1,group);
+			c.LED(c.i._3, 1, group);
 		}
-		if(engine.getValue(group,"hotcue_4_enabled"))
+		if(engine.getValue(group, "hotcue_4_enabled"))
 		{
-			c.led_(c.i._4,1,group);
+			c.LED(c.i._4, 1, group);
 		}
-		if(engine.getValue(group,"loop_enabled"))
+		if(engine.getValue(group, "loop_enabled"))
 		{
-			c.led_(c.i.loop_in,1,group);
-			c.led_(c.i.loop_out,1,group);
+			c.LED(c.i.loop_in, 1, group);
+			c.LED(c.i.loop_out, 1, group);
 		}
 	}/*end for channelcount*/
 }; /*end c.setInitialValues*/
 
-/*c.connectEvents = function(group)*/
-c.connectEvents = function()
+c.ConnectEvents = function()
 {
-	for(var i=0;i<c.channelCount_;i++)
+	for(var i=0;i<c.channelCount;i++)
 	{
 		var group='[Channel'+(i+1)+']';
 
 		/*connect to events*/
-		engine.connectControl(group,"play","c.OnChannelPlaying");
-		engine.connectControl(group,"cue_default","c.OnChannelCueActive");
+		engine.connectControl(group, "play", "c.OnChannelPlaying");
+/*		engine.connectControl(group, "cue_default", "c.OnChannelCueActive");*/
 
-		engine.connectControl(group,"hotcue_1_enabled","c.OnHotcue1_1");
-		engine.connectControl(group,"hotcue_2_enabled","c.OnHotcue1_2");
-		engine.connectControl(group,"hotcue_3_enabled","c.OnHotcue1_3");
-		engine.connectControl(group,"hotcue_4_enabled","c.OnHotcue1_4");
+		engine.connectControl(group, "hotcue_1_enabled", "c.OnHotcue1_1");
+		engine.connectControl(group, "hotcue_2_enabled", "c.OnHotcue1_2");
+		engine.connectControl(group, "hotcue_3_enabled", "c.OnHotcue1_3");
+		engine.connectControl(group, "hotcue_4_enabled", "c.OnHotcue1_4");
 
-		engine.connectControl(group,"loop_enabled","c.OnLoopEnabled");
-		engine.connectControl(group,"beat_active","c.OnBeatActive");
+		engine.connectControl(group, "loop_enabled", "c.OnLoopEnabled");
+		engine.connectControl(group, "beat_active", "c.OnBeatActive");
 
 		/*more connections done via map()*/
+	}
+}; /*end c.ConnectEvents*/
 
-	} /*end for channelcount*/
-}; /*end c.connectEvents*/
-
-/*c.resetLEDs = function(group)*/
-c.resetLEDs = function()
+c.ResetLEDs = function()
 {
-	for(var i=0;i<c.channelCount_;i++)
+	for(var i=0;i<c.channelCount;i++)
 	{
 		var group='[Channel'+(i+1)+']';
 
 		/*Turn all LEDS off*/
-		c.led_(c.i.play_pause,0,group);
-		c.led_(c.i.cue,0,group);
-		c.led_(c.i.loop_in,0,group);
-		c.led_(c.i.loop_out,0,group);
-		c.led_(c.i.b1_1,0,group);
-		c.led_(c.i.b2_1,0,group);
-		c.led_(c.i.b4_1,0,group);
-		c.led_(c.i._1,0,group);
-		c.led_(c.i._2,0,group);
-		c.led_(c.i._3,0,group);
-		c.led_(c.i._4,0,group);
-		c.led_(c.i.scratch,0,group);
-		c.led_(c.i.skid,0,group);
-		c.led_(c.i.scratch,0,group);
-		c.led_(c.i.phase,0,group);
-		c.led_(c.i.pitch_4,0,group);
-		c.led_(c.i.pitch_8,0,group);
-		c.led_(c.i.pitch_16,0,group);
-		c.led_(c.i.pitch_100,0,group);
-		c.led_(c.i.keylock,0,group);
-		c.led_(c.i.pitch0,0,group);
-		c.led_(c.i.flanger,0,group);
-		c.led_(c.i.trans,0,group);
-		c.led_(c.i.pan,0,group);
+		c.LED(c.i.play_pause, 0, group);
+		c.LED(c.i.cue, 0, group);
+		c.LED(c.i.loop_in, 0, group);
+		c.LED(c.i.loop_out, 0, group);
+		c.LED(c.i.b1_1, 0, group);
+		c.LED(c.i.b2_1, 0, group);
+		c.LED(c.i.b4_1, 0, group);
+		c.LED(c.i._1, 0, group);
+		c.LED(c.i._2, 0, group);
+		c.LED(c.i._3, 0, group);
+		c.LED(c.i._4, 0, group);
+		c.LED(c.i.scratch, 0, group);
+		c.LED(c.i.skid, 0, group);
+		c.LED(c.i.scratch, 0, group);
+		c.LED(c.i.phase, 0, group);
+		c.LED(c.i.pitch_4, 0, group);
+		c.LED(c.i.pitch_8, 0, group);
+		c.LED(c.i.pitch_16, 0, group);
+		c.LED(c.i.pitch_100, 0, group);
+		c.LED(c.i.keylock, 0, group);
+		c.LED(c.i.pitch0, 0, group);
+		c.LED(c.i.flanger, 0, group);
+		c.LED(c.i.trans, 0, group);
+		c.LED(c.i.pan, 0, group);
 	}
 }; /*end c.resetLEDs*/
 
-c.shutdown = function(id)
+c.LoopHalve = function(channel, control, value, status, group)
 {
-	/*Turn all LEDs off by using init function*/
-	c.resetLEDs();
+	if(value==c.keyPressed)
+	{
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+
+		var diff=loopEndPos-loopStartPos;
+		loopEndPos=loopStartPos+(diff/2);
+
+		engine.setValue(group, "loop_end_position", loopEndPos);
+	}
 };
 
-c.loopHalveInverse = function(channel, control, value, status, group)
+c.LoopDouble = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
+	{
+		var loopStartPos=engine.getValue(group, "loop_start_position");
+		var loopEndPos=engine.getValue(group, "loop_end_position");
+
+		var diff=loopEndPos-loopStartPos;
+		loopEndPos=loopStartPos+2*diff;
+
+		engine.setValue(group, "loop_end_position", loopEndPos);
+	}
+};
+
+c.LoopHalveInverse = function(channel, control, value, status, group)
+{
+	if(value==c.keyPressed)
 	{
 		var loopStartPos=engine.getValue(group, "loop_start_position");
 		var loopEndPos=engine.getValue(group, "loop_end_position");
@@ -560,16 +616,16 @@ c.loopHalveInverse = function(channel, control, value, status, group)
 		var diff=loopEndPos-loopStartPos;
 		loopStartPos+=(diff/2);
 
-		engine.setValue(group, "loop_start_position",loopStartPos);
+		engine.setValue(group, "loop_start_position", loopStartPos);
 
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_point",loopStartPos);
+		engine.setValue(group, "cue_point", loopStartPos);
 	}
 };
 
-c.loopDoubleInverse = function(channel, control, value, status, group)
+c.LoopDoubleInverse = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
 		var loopStartPos=engine.getValue(group, "loop_start_position");
 		var loopEndPos=engine.getValue(group, "loop_end_position");
@@ -577,16 +633,16 @@ c.loopDoubleInverse = function(channel, control, value, status, group)
 		var diff=loopEndPos-loopStartPos;
 		loopStartPos-=diff;
 
-		engine.setValue(group, "loop_start_position",loopStartPos);
+		engine.setValue(group, "loop_start_position", loopStartPos);
 
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_point",loopStartPos);
+		engine.setValue(group, "cue_point", loopStartPos);
 	}
 };
 
-c.stepLoopBack = function(channel, control, value, status, group)
+c.StepLoopBack = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
 		var loopStartPos=engine.getValue(group, "loop_start_position");
 		var loopEndPos=engine.getValue(group, "loop_end_position");
@@ -595,18 +651,18 @@ c.stepLoopBack = function(channel, control, value, status, group)
 		loopStartPos-=diff;
 		loopEndPos-=diff;
 
-		engine.setValue(group, "loop_start_position",loopStartPos);
+		engine.setValue(group, "loop_start_position", loopStartPos);
 
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_point",loopStartPos);
+		engine.setValue(group, "cue_point", loopStartPos);
 
-		engine.setValue(group, "loop_end_position",loopEndPos);
+		engine.setValue(group, "loop_end_position", loopEndPos);
 	}
 };
 
-c.stepLoopForward = function(channel, control, value, status, group)
+c.StepLoopForward = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
 		var loopStartPos=engine.getValue(group, "loop_start_position");
 		var loopEndPos=engine.getValue(group, "loop_end_position");
@@ -615,16 +671,16 @@ c.stepLoopForward = function(channel, control, value, status, group)
 		loopStartPos+=diff;
 		loopEndPos+=diff;
 
-		engine.setValue(group, "loop_end_position",loopEndPos);
+		engine.setValue(group, "loop_end_position", loopEndPos);
 
-		engine.setValue(group, "loop_start_position",loopStartPos);
+		engine.setValue(group, "loop_start_position", loopStartPos);
 
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_point",loopStartPos);
+		engine.setValue(group, "cue_point", loopStartPos);
 	}
 };
 
-c.evaluateNudgeMode = function(index)
+c.EvaluateNudgeMode = function(index)
 {
 	/*start*/
 	if(c.nudgeStartPressed[index]==1 && c.nudgeEndPressed[index]==0)
@@ -647,10 +703,10 @@ c.evaluateNudgeMode = function(index)
 	}
 };
 
-c.nudgeLoopStart = function(channel, control, value, status, group)
+c.NudgeLoopStart = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
 		c.nudgeStartPressed[index]=1;
 	}
@@ -658,13 +714,13 @@ c.nudgeLoopStart = function(channel, control, value, status, group)
 	{
 		c.nudgeStartPressed[index]=0;
 	}
-	c.evaluateNudgeMode(index);
+	c.EvaluateNudgeMode(index);
 };
 
-c.nudgeLoopEnd = function(channel, control, value, status, group)
+c.NudgeLoopEnd = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
 		c.nudgeEndPressed[index]=1;
 	}
@@ -672,13 +728,13 @@ c.nudgeLoopEnd = function(channel, control, value, status, group)
 	{
 		c.nudgeEndPressed[index]=0;
 	}
-	c.evaluateNudgeMode(index);
+	c.EvaluateNudgeMode(index);
 };
 
-c.changeRateRange = function(channel, control, value, status, group)
+c.ChangeRateRange = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
 		c.currentRateRange[index]++;
 		if(c.currentRateRange[index]>3)
@@ -687,183 +743,262 @@ c.changeRateRange = function(channel, control, value, status, group)
 		}
 
 		/*print("change rate range "+RMP3.rateRange[RMP3.currentRateRange[index]]);*/
-		engine.setValue(group,"rateRange",c.rateRange[c.currentRateRange[index]]);
+		engine.setValue(group, "rateRange", c.rateRange[c.currentRateRange[index]]);
+
+		/* don't change now if locked */
+		if(c.pitchLocked[index]==0)
+		{
+			engine.setValue(group, "rate", c.lastPitch[index]);
+		}
 
 		if(c.currentRateRange[index]==0)
 		{
-			c.led_(c.i.pitch_4,1,group);
-			c.led_(c.i.pitch_8,0,group);
-			c.led_(c.i.pitch_16,0,group);
-			c.led_(c.i.pitch_100,0,group);
+			c.LED(c.i.pitch_4, 1, group);
+			c.LED(c.i.pitch_8, 0, group);
+			c.LED(c.i.pitch_16, 0, group);
+			c.LED(c.i.pitch_100, 0, group);
 		}
 		else if(c.currentRateRange[index]==1)
 		{
-			c.led_(c.i.pitch_4,0,group);
-			c.led_(c.i.pitch_8,1,group);
-			c.led_(c.i.pitch_16,0,group);
-			c.led_(c.i.pitch_100,0,group);
+			c.LED(c.i.pitch_4, 0, group);
+			c.LED(c.i.pitch_8, 1, group);
+			c.LED(c.i.pitch_16, 0, group);
+			c.LED(c.i.pitch_100, 0, group);
 		}
 		else if(c.currentRateRange[index]==2)
 		{
-			c.led_(c.i.pitch_4,0,group);
-			c.led_(c.i.pitch_8,0,group);
-			c.led_(c.i.pitch_16,1,group);
-			c.led_(c.i.pitch_100,0,group);
+			c.LED(c.i.pitch_4, 0, group);
+			c.LED(c.i.pitch_8, 0, group);
+			c.LED(c.i.pitch_16, 1, group);
+			c.LED(c.i.pitch_100, 0, group);
 		}
 		else if(c.currentRateRange[index]==3)
 		{
-			c.led_(c.i.pitch_4,0,group);
-			c.led_(c.i.pitch_8,0,group);
-			c.led_(c.i.pitch_16,0,group);
-			c.led_(c.i.pitch_100,1,group);
+			c.LED(c.i.pitch_4, 0, group);
+			c.LED(c.i.pitch_8, 0, group);
+			c.LED(c.i.pitch_16, 0, group);
+			c.LED(c.i.pitch_100, 1, group);
 		}
 	}
 }; /*end c.changeRateRange*/
 
-c.pitchZero = function(channel, control, value, status, group)
+c.PitchZero = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
-		engine.setValue(group,"rate",0);
-		c.led_(c.i.pitch_0,1,group);
+		engine.setValue(group, "rate", 0);
+		c.pitchAtZero[index]=1;
 	}
 	else
 	{
-		c.led_(c.i.pitch_0,0,group);
+		c.pitchAtZero[index]=0;
 	}
+	c.EvalSetPitchLED(group);
 };
 
-c.beat_tap = function(channel, control, value, status, group)
+/*
+   _  127  1.00  -8, -...
+  | |
+  | |
+  |=|      0
+  | |
+  |_| 0   -1.00  +8, ...
+*/
+c.Rate = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	/* remember value for pitch lock/unlock and rate changes. - to invert */
+	c.lastPitch[index]=script.midiPitch(control, value, status);
+
+	if(c.pitchLocked[index]==0)
 	{
-		engine.setValue(group,"bpm_tap",1);
+		engine.setValue(group, "rate", c.lastPitch[index]);
 	}
+	/*ignore if pitch locked*/
 };
 
-c.back_fwd = function(channel, control, value, status, group)
+c.TogglePitchLock = function(channel, control, value, status, group)
 {
-	if(value==64)
+	if(value==c.keyPressed)
 	{
-		engine.setValue(group,"fwd",0);
-		engine.setValue(group,"back",0);
-	}
-	else if(value>64)
-	{
-		engine.setValue(group,"fwd",1);
-	}
-	else if(value<64)
-	{
-		engine.setValue(group,"back",1);
-	}
-};
-
-c.playTrack = function(channel, control, value, status, group)
-{
-	/*no action of no song loaded to deck*/
-	if (engine.getValue(group, "duration") == 0)
-	{
-		return;
-	}
-
-	var isCupActive=engine.getValue(group,"cue_default");
-	if(isCupActive == true)
-	{
-		/*allow to change from cue to play mode (press play while cue hold, then let go cue)*/
-		engine.setValue(group,"play",1);
-		return;
-	}
-
-	var currentlyPlaying=engine.getValue(group,"play");
-	if(value == c.keyPressed)
-	{
-		if (currentlyPlaying == 1)
+		var index=c.GetIndex(group);
+		if(c.pitchLocked[index]==1)
 		{
-			engine.setValue(group,"play",0);
+			c.pitchLocked[index]=0;
+			engine.setValue(group, "rate", c.lastPitch[index]);
 		}
 		else
 		{
-			engine.setValue(group,"play",1);
+			c.pitchLocked[index]=1;
+			engine.setValue(group, "rate", 0);
 		}
+		c.EvalSetPitchLED(group);
 	}
-}; /*end c.playTrack*/
+};
 
-c.Cue = function(channel, control, value, status, group)
+c.BeatTap = function(channel, control, value, status, group)
 {
-	/*no action of no song loaded to deck*/
-	if (engine.getValue(group, "duration") == 0)
+	if(value==c.keyPressed)
+	{
+		engine.setValue(group, "bpm_tap", 1);
+	}
+};
+
+c.BackFwd = function(channel, control, value, status, group)
+{
+	if(value==64)
+	{
+		engine.setValue(group, "fwd", 0);
+		engine.setValue(group, "back", 0);
+	}
+	else if(value>64)
+	{
+		engine.setValue(group, "fwd", 1);
+	}
+	else if(value<64)
+	{
+		engine.setValue(group, "back", 1);
+	}
+};
+
+c.PlayTrack = function(channel, control, value, status, group)
+{
+	var index=c.GetIndex(group);
+	/*no action if no song loaded to deck*/
+	if(engine.getValue(group, "duration")==0)
 	{
 		return;
 	}
 
-	if(value == c.keyPressed)
+	var currentlyPlaying=engine.getValue(group, "play");
+	if(value==c.keyPressed)
 	{
-		engine.setValue(group,"cue_default",1);
-		c.led_(c.i.play_pause,0,group);
-		c.led_(control,1,group);
+		c.playDown[index]=1;
+		if(currentlyPlaying==1 && c.cueDown[index]==0)
+		{
+			engine.setValue(group, "play", 0);
+		}
+		else
+		{
+			engine.setValue(group, "play", 1);
+		}
 	}
 	else
 	{
-		engine.setValue(group,"cue_default",0);
-		c.led_(control,0,group);
+		c.playDown[index]=0;
+	}
+
+}; /*end c.PlayTrack*/
+
+c.Cue = function(channel, control, value, status, group)
+{
+	var index=c.GetIndex(group);
+	if(engine.getValue(group, "duration")==0)
+	{
+		return;
+	}
+
+	var currentlyPlaying=engine.getValue(group, "play");
+
+	if(value==c.keyPressed)
+	{
+		c.cueDown[index]=1;
+		engine.setValue(group, "cue_gotoandplay", 1);
+		c.LED(c.i.cue, 1, group);
+	}
+	else
+	{
+		c.cueDown[index]=0;
+		if(currentlyPlaying==1 && c.playDown[index]==0)
+		{
+			engine.setValue(group, "cue_gotoandstop", 1);
+		}
+		c.LED(c.i.cue, 0, group);
+	}
+};
+
+c.TemporaryPause = function(channel, control, value, status, group)
+{
+	var currentlyPlaying=engine.getValue(group, "play");
+
+	if(value==c.keyPressed)
+	{
+		if(currentlyPlaying==1)
+		{
+			engine.setValue(group, "play", 0);
+		}
+	}
+	else
+	{
+		engine.setValue(group, "play", 1);
+	}
+};
+
+c.TemporaryVolumeKill = function(channel, control, value, status, group)
+{
+	if(value==c.keyPressed)
+	{
+		engine.setValue(group, "volume", 0);
+	}
+	else
+	{
+		engine.setValue(group, "volume", 1);
 	}
 };
 
 c.Scratch = function(channel, control, value, status, group)
 {
 	/*see hold*/
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
-		var index=c.getIndex_(group);
-		if(c.scratchMode[index] == 1)
+		var index=c.GetIndex(group);
+		if(c.scratchMode[index]==1)
 		{
 			c.scratchMode[index]=0;
-			c.led_(control,0,group);
+			c.LED(control, 0, group);
 		}
 		else
 		{
 			c.scratchMode[index]=1;
-			c.led_(control,1,group);
+			c.LED(control, 1, group);
 		}
 	}
 };
 
-/*sensitivity 1*/
-c.sensitivity1 = function(channel, control, value, status, group)
+c.Sensitivity1 = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
-			c.sensitivity[index]=1;
-			c.led_(c.i.flanger,1,group);
-			c.led_(c.i.trans,0,group);
-			c.led_(c.i.pan,0,group);
+		c.sensitivity[index]=1;
+		c.LED(c.i.flanger, 1, group);
+		c.LED(c.i.trans, 0, group);
+		c.LED(c.i.pan, 0, group);
 	}
 };
 
-/*sensitivity 2*/
-c.sensitivity2 = function(channel, control, value, status, group)
+c.Sensitivity2 = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
-			c.sensitivity[index]=2;
-			c.led_(c.i.flanger,0,group);
-			c.led_(c.i.trans,1,group);
-			c.led_(c.i.pan,0,group);
+		c.sensitivity[index]=2;
+		c.LED(c.i.flanger, 0, group);
+		c.LED(c.i.trans, 1, group);
+		c.LED(c.i.pan, 0, group);
 	}
 };
 
-/*sensitivity 3*/
-c.sensitivity3 = function(channel, control, value, status, group)
+c.Sensitivity3 = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
-	if(value == c.keyPressed)
+	var index=c.GetIndex(group);
+	if(value==c.keyPressed)
 	{
-			c.sensitivity[index]=3;
-			c.led_(c.i.flanger,0,group);
-			c.led_(c.i.trans,0,group);
-			c.led_(c.i.pan,1,group);
+		c.sensitivity[index]=3;
+		c.LED(c.i.flanger, 0, group);
+		c.LED(c.i.trans, 0, group);
+		c.LED(c.i.pan, 1, group);
 	}
 };
 
@@ -873,12 +1008,12 @@ c.JogWheel = function(channel, control, value, status, group)
 	var jogValue=(value - 64);
 	/*print('jogwheel val: '+jogValue);*/
 
-	var index=c.getIndex_(group);
+	var index=c.GetIndex(group);
 
 	/*scratch*/
-	if (c.scratchMode[index] == 1)
+	if(c.scratchMode[index]==1)
 	{
-		engine.scratchTick(index+1,jogValue);
+		engine.scratchTick(index+1, jogValue);
 	}
 	/*small speed changes*/
 	else
@@ -886,43 +1021,43 @@ c.JogWheel = function(channel, control, value, status, group)
 		/*-3 +3*/
 		if(jogValue>20)
 		{
-			engine.setValue(group,"jog",+3);
+			engine.setValue(group, "jog", +3);
 		}
 		else if(jogValue>10)
 		{
-			engine.setValue(group,"jog",+2);
+			engine.setValue(group, "jog", +2);
 		}
 		else if(jogValue>0)
 		{
-			engine.setValue(group,"jog",+1);
+			engine.setValue(group, "jog", +1);
 		}
 		else if(jogValue<20)
 		{
-			engine.setValue(group,"jog",-3);
+			engine.setValue(group, "jog", -3);
 		}
 		else if(jogValue<10)
 		{
-			engine.setValue(group,"jog",-2);
+			engine.setValue(group, "jog", -2);
 		}
 		else if(jogValue<0)
 		{
-			engine.setValue(group,"jog",-1);
+			engine.setValue(group, "jog", -1);
 		}
 	}
 }; /*end c.JogWheel*/
 
 /*should distinguish playing/non-playing*/
-c.JogWheel_Hold = function(channel, control, value, status, group)
+c.JogWheelHold = function(channel, control, value, status, group)
 {
 	/*see scratch*/
-	var index=c.getIndex_(group);
+	var index=c.GetIndex(group);
 
-	if(c.scratchMode[index] == 0)
+	if(c.scratchMode[index]==0)
 	{
 		return;
 	}
 
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
 		var sens=1024;
 		if(c.sensitivity[index]==1)
@@ -949,7 +1084,7 @@ c.JogWheel_Hold = function(channel, control, value, status, group)
 c.JogZoom = function(channel, control, value, status, group)
 {
 	/*1-6*/
-	engine.setValue(group,"waveform_zoom", ((value/127)*5+1));
+	engine.setValue(group, "waveform_zoom", 6-((value/127)*5));
 };
 
 c.PrevNextWheelShift = function(channel, control, value, status, group)
@@ -957,18 +1092,19 @@ c.PrevNextWheelShift = function(channel, control, value, status, group)
 	/*ccw*/
 	if(value==63)
 	{
-		engine.setValue(c.playlist,"SelectTrackKnob", -10);
+		engine.setValue(c.playlist, "SelectTrackKnob", -10);
 	}
 	/*cw 65*/
 	else
 	{
-		engine.setValue(c.playlist,"SelectTrackKnob", 10);
+		engine.setValue(c.playlist, "SelectTrackKnob", 10);
 	}
 };
 
 c.PrevNextWheel = function(channel, control, value, status, group)
 {
-	var index=c.getIndex_(group);
+	var index=c.GetIndex(group);
+/* //// NEEDS  DOCUMENTATION */
 
 	/*if in nudgeMode to set start or end, set stepsize*/
 	var step=1024;
@@ -988,6 +1124,8 @@ c.PrevNextWheel = function(channel, control, value, status, group)
 		}
 	}
 
+	var isQuantized=engine.getValue(group, "quantize");
+
 	if(c.nudgeMode[index]==1)
 	{
 		/*set loop boundaries start*/
@@ -1005,10 +1143,10 @@ c.PrevNextWheel = function(channel, control, value, status, group)
 			loopStartPos+=step;
 
 		}
-		engine.setValue(group, "loop_start_position",loopStartPos);
+		engine.setValue(group, "loop_start_position", loopStartPos);
 
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_point",loopStartPos);
+		engine.setValue(group, "cue_point", loopStartPos);
 
 	}
 	else if(c.nudgeMode[index]==2)
@@ -1028,7 +1166,7 @@ c.PrevNextWheel = function(channel, control, value, status, group)
 			loopEndPos+=step;
 
 		}
-		engine.setValue(group, "loop_end_position",loopEndPos);
+		engine.setValue(group, "loop_end_position", loopEndPos);
 	}
 	else if(c.nudgeMode[index]==3)
 	{
@@ -1050,16 +1188,14 @@ c.PrevNextWheel = function(channel, control, value, status, group)
 		{
 			loopStartPos+=step;
 			loopEndPos+=step;
-
 		}
 
-		engine.setValue(group, "loop_start_position",loopStartPos);
+		engine.setValue(group, "loop_start_position", loopStartPos);
 
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_point",loopStartPos);
+		engine.setValue(group, "cue_point", loopStartPos);
 
-		engine.setValue(group, "loop_end_position",loopEndPos);
-
+		engine.setValue(group, "loop_end_position", loopEndPos);
 	}
 	else
 	{
@@ -1067,12 +1203,12 @@ c.PrevNextWheel = function(channel, control, value, status, group)
 		/*ccw*/
 		if(value==63)
 		{
-			engine.setValue(c.playlist,"SelectPrevTrack", 1);
+			engine.setValue(c.playlist, "SelectPrevTrack", 1);
 		}
 		/*cw 65*/
 		else
 		{
-			engine.setValue(c.playlist,"SelectNextTrack", 1);
+			engine.setValue(c.playlist, "SelectNextTrack", 1);
 
 		}
 	}
@@ -1081,46 +1217,57 @@ c.PrevNextWheel = function(channel, control, value, status, group)
 c.LoadSelectedTrack = function(channel, control, value, status, group)
 {
 	/*if pressed, will stop (if playing), load track and play at once*/
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
-		engine.setValue(group,"play",0);
+		engine.setValue(group, "play", 0);
 		engine.setValue(group, "LoadSelectedTrackAndPlay", 1);
 	}
 };
 
 c.LoopIn = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
-		engine.setValue(group,"loop_in",1);
-
+		/*engine.setValue(group, "loop_in", 1);*/
 		/*set cue point to start of loop*/
-		engine.setValue(group,"cue_set",1);
-
-		c.led_(control,1,group);
+		engine.setValue(group, "cue_set", 1);
+		/*use cue point for current position since we can't get this information otherwise*/
+		var loopStart=engine.getValue(group, "cue_point");
+		engine.setValue(group, "loop_start_position", loopStart);
+		c.LED(control, 1, group);
 	}
 };
 
 c.LoopOut = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
-		engine.setValue(group,"loop_out",1);
+		/*engine.setValue(group, "loop_out", 1);*/
+		/* use unassigned hotcue to get current playposition */
+		engine.setValue(group, "hotcue_5_clear", 1);
+		engine.setValue(group, "hotcue_5_set", 1);
+		var loopEnd=engine.getValue(group, "hotcue_5_position");
+		engine.setValue(group, "loop_end_position", loopEnd);
+		if(!engine.getValue(group, "loop_enabled"))
+		{
+			engine.setValue(group, "reloop_toggle", 1);
+		}
+		engine.setValue(group, "hotcue_5_clear", 1);
 	}
 };
 
-c.ReloopExit = function(channel, control, value, status, group)
+c.ToggleBlinkBeats = function(channel, control, value, status, group)
 {
-	if(value == c.keyPressed)
+	if(value==c.keyPressed)
 	{
-		if(engine.getValue(group,"loop_enabled"))
+		var index=c.GetIndex(group);
+		if(c.blinkBeats[index]==1)
 		{
-			engine.setValue(group,"reloop_exit",1);
+			c.blinkBeats[index]=0;
 		}
 		else
 		{
-			/*doesn't work*/
-			engine.setValue(group,"reloop_exit",0);
+			c.blinkBeats[index]=1;
 		}
 	}
 };
@@ -1129,73 +1276,72 @@ c.ReloopExit = function(channel, control, value, status, group)
 /*On event methods (from engine)*/
 /*==========================================================================*/
 
-c.OnLoopEnabled = function(value,group)
+c.OnLoopEnabled = function(value, group)
 {
-	c.led_(c.i.loop_in,value,group);
-	c.led_(c.i.loop_out,value,group);
+	c.LED(c.i.loop_in, value, group);
+	c.LED(c.i.loop_out, value, group);
 };
 
-c.beatLed=0;
-
-c.OnBeatActive = function(value,group)
+c.OnBeatActive = function(value, group)
 {
-	if(value==1)
+	var index=c.GetIndex(group);
+	if(c.blinkBeats[index]==1 && value==1)
 	{
-		c.lOn_(c.i.filter,group);
+		c.LED(c.i.filter, 1, group);
 		/*print("BEAT "+group);*/
 
 		/*one shot timer to turn off led after 50 ms*/
-		engine.beginTimer(50,'c.lOff_(c.i.filter,"'+group+'")',true);
+		engine.beginTimer(50,'c.LEDOff(c.i.filter, "'+group+'")',true);
 	}
 };
 
 /*some c.Onxxx get created via map()*/
 
-c.OnHotcue1_1 = function(value,group)
+c.OnHotcue1_1 = function(value, group)
 {
-	c.led_(c.i._1,value,group);
+	c.LED(c.i._1,value, group);
 };
 
-c.OnHotcue1_2 = function(value,group)
+c.OnHotcue1_2 = function(value, group)
 {
-	c.led_(c.i._2,value,group);
+	c.LED(c.i._2,value, group);
 };
 
-c.OnHotcue1_3 = function(value,group)
+c.OnHotcue1_3 = function(value, group)
 {
-	c.led_(c.i._3,value,group);
+	c.LED(c.i._3,value, group);
 };
 
-c.OnHotcue1_4 = function(value,group)
+c.OnHotcue1_4 = function(value, group)
 {
-	c.led_(c.i._4,value,group);
+	c.LED(c.i._4,value, group);
 };
 
-c.OnChannelPlaying = function(value,group,event)
+c.OnChannelPlaying = function(value, group,event)
 {
-		if(value == 0)
+		if(value==0)
 		{
-			c.led_(c.i.play_pause,0,group);
-			c.led_(c.i.cue,0,group);
+			c.LED(c.i.play_pause, 0, group);
+			c.LED(c.i.cue, 0, group);
 		}
 		else
 		{	/*if deck is playing but not in CUE modus*/
-			if( engine.getValue(group,"cue_default") == 0)
+			if( engine.getValue(group, "cue_default")==0)
 			{
-				c.led_(c.i.play_pause,1,group);
+				c.LED(c.i.play_pause, 1, group);
 			}
 		}
 };
 
-c.OnChannelCueActive = function(value,group,evemt)
+c.OnChannelCueActive = function(value, group, event)
 {
-	if(value == 0)
+	if(value==0)
 	{
-		c.led_(c.i.cue,0,group);
+		c.LED(c.i.cue, 0, group);
 	}
 	else
 	{
-		c.led_(c.i.cue,1,group);
+		c.LED(c.i.cue, 1, group);
 	}
 };
 
@@ -1204,7 +1350,7 @@ c.OnChannelCueActive = function(value,group,evemt)
 /*==========================================================================*/
 
 /*index off by 1*/
-c.getIndex_ = function(group)
+c.GetIndex = function(group)
 {
 	if(group=="[Channel1]")
 	{
@@ -1240,27 +1386,41 @@ c.getIndex_ = function(group)
 	}
 };
 
-c.led_ = function(control,isOn,group)
+c.LED = function(control, isOn, group)
 {
 	if(isOn==1)	
 	{
-		c.lOn_(control,group);
+		c.LEDOn(control, group);
 	}
 	else
 	{
-		c.lOff_(control,group);
+		c.LEDOff(control, group);
 	}
 };
 
-c.lOn_ = function(control,group)
+c.LEDOn = function(control, group)
 {
-	var index=c.getIndex_(group);
+	var index=c.GetIndex(group);
 	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOn);');
 };
 
-c.lOff_ = function(control,group)
+c.LEDOff = function(control, group)
 {
-
-	var index=c.getIndex_(group);
+	var index=c.GetIndex(group);
 	eval('midi.sendShortMsg(0x9'+index+', control, c.ledOff);');
 };
+
+c.EvalSetPitchLED = function(group)
+{
+	var index=c.GetIndex(group);
+	if(c.pitchAtZero[index]==1 || c.pitchLocked[index]==1)
+	{
+		c.LED(c.i.pitch_0, 1, group);
+	}
+	else
+	{
+		c.LED(c.i.pitch_0, 0, group);
+	}
+};
+
+/*EOF*/

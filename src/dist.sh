@@ -4,10 +4,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #run in src directory
 cd "$DIR"
 
-#mixxx 1.0
-#MIXXX_CONTROLLER_INSTALL_DIR="/usr/share/mixxx/midi"
-#mixxx 2.0
-MIXXX_CONTROLLER_INSTALL_DIR="/usr/share/mixxx/controllers"
+#MIXXX_CONTROLLER_INSTALL_DIR="/usr/share/mixxx/controllers"
+MIXXX_CONTROLLER_INSTALL_DIR="${HOME}/download/mixxx-release-2.1.1/res/controllers/"
 CONTROLLER_XML_FILENAME="Reloop RMP-3.midi.xml"
 CONTROLLER_JS_FILENAME="Reloop-RMP-3-scripts.js"
 
@@ -24,13 +22,6 @@ checkAvail()
 
 for tool in java javac xmlstarlet mktemp; \
 	do checkAvail "$tool"; done
-
-if [ ! -d "$MIXXX_CONTROLLER_INSTALL_DIR" ]
-then
-	echo -e "install directory not found: $MIXXX_CONTROLLER_INSTALL_DIR"
-	echo -e "aborting."
-	exit -1
-fi
 
 if [ ! -r "mixxxml.class" ]
 then
@@ -56,24 +47,39 @@ cat "$tmpfile"
 echo ""
 echo "success!"
 echo ""
-echo "copy resulting XML file to ${DIR}/../${CONTROLLER_XML_FILENAME} ?"
-echo "copy controller.js to ${DIR}/../$CONTROLLER_JS_FILENAME ?"
-echo "enter to continue, ctrl+c to abort"
-read a
+echo "copying resulting XML file to ${DIR}/../controllers/${CONTROLLER_XML_FILENAME}"
+echo "copying controller.js to ${DIR}/../controllers/$CONTROLLER_JS_FILENAME"
+#echo "enter to continue, ctrl+c to abort"
+#read a
 
 mv "$tmpfile" "${DIR}/../controllers/${CONTROLLER_XML_FILENAME}" \
 && cp controller.js "${DIR}/../controllers/$CONTROLLER_JS_FILENAME" \
 && chmod 644 "${DIR}/../controllers/${CONTROLLER_XML_FILENAME}" \
 && chmod 644 "${DIR}/../controllers/${CONTROLLER_JS_FILENAME}"
 
-echo "install to ${MIXXX_CONTROLLER_INSTALL_DIR}?"
-read a
-sudo -k
-sudo cp "${DIR}/../controllers/${CONTROLLER_XML_FILENAME}" "${MIXXX_CONTROLLER_INSTALL_DIR}" \
-&& sudo cp "${DIR}/../controllers/${CONTROLLER_JS_FILENAME}" "${MIXXX_CONTROLLER_INSTALL_DIR}" \
-&& sudo chmod 644 "${MIXXX_CONTROLLER_INSTALL_DIR}/${CONTROLLER_XML_FILENAME}" \
-&& sudo chmod 644 "${MIXXX_CONTROLLER_INSTALL_DIR}/${CONTROLLER_JS_FILENAME}"
+echo "installing files to $MIXXX_CONTROLLER_INSTALL_DIR"
+
+if [ ! -d "$MIXXX_CONTROLLER_INSTALL_DIR" ]
+then
+	echo -e "install directory not found: $MIXXX_CONTROLLER_INSTALL_DIR"
+	echo -e "aborting."
+	exit 1
+fi
+
+cp "${DIR}/../controllers/${CONTROLLER_XML_FILENAME}" "$MIXXX_CONTROLLER_INSTALL_DIR" \
+&& cp "${DIR}/../controllers/${CONTROLLER_JS_FILENAME}" "$MIXXX_CONTROLLER_INSTALL_DIR"
+ret=$?
 
 echo "done"
+
+exit $ret
+
+#echo "install to ${MIXXX_CONTROLLER_INSTALL_DIR}?"
+#read a
+#sudo -k
+#sudo cp "${DIR}/../controllers/${CONTROLLER_XML_FILENAME}" "${MIXXX_CONTROLLER_INSTALL_DIR}" \
+#&& sudo cp "${DIR}/../controllers/${CONTROLLER_JS_FILENAME}" "${MIXXX_CONTROLLER_INSTALL_DIR}" \
+#&& sudo chmod 644 "${MIXXX_CONTROLLER_INSTALL_DIR}/${CONTROLLER_XML_FILENAME}" \
+#&& sudo chmod 644 "${MIXXX_CONTROLLER_INSTALL_DIR}/${CONTROLLER_JS_FILENAME}"
 
 #EOF
