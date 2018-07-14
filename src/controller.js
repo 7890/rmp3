@@ -37,7 +37,7 @@ c.functionPrefix='c';
 /*name of javascript file (this)*/
 c.jsFile='Reloop-RMP-3-scripts.js';
 /*increment only on functional changes*/
-c.scriptVersion='2.3';
+c.scriptVersion='2.4';
 
 /*common midi values*/
 c.ledOn=0x7F;
@@ -367,6 +367,8 @@ c.i=
 c.Map("0x9",c.i.play_pause	,c.channel, "c.PlayTrack", "", c.scriptBinding, 0);
 c.Map("0x9",c.i.cue		,c.channel, "c.Cue", "", c.scriptBinding, 0);
 c.Map("0x9",c.i.cue_shift	,c.channel, "cue_set", "", c.normal, 0);
+c.Map("0x9",c.i.b1_4		,c.channel, "reverse", "", c.normal, 0);
+c.Map("0x9",c.i.b1_4_shift	,c.channel, "reverseroll", "", c.normal, 0);
 c.Map("0x9",c.i.b1_2		,c.channel, "c.TemporaryPause", "", c.scriptBinding, 0);
 c.Map("0x9",c.i.b3_4		,c.channel, "c.TemporaryVolumeKill", "", c.scriptBinding, 0);
 c.Map("0x9",c.i.b1_1		,c.channel, "filterHighKill", "", c.normal, 0);
@@ -375,6 +377,7 @@ c.Map("0x9",c.i.b4_1		,c.channel, "filterLowKill", "", c.normal, 0);
 c.Map("0x9",c.i.skid		,c.channel, "repeat", "", c.normal, 1);
 c.Map("0x9",c.i.filter		,c.channel, "beats_translate_curpos", "", c.normal, 1);
 c.Map("0x9",c.i.phase		,c.channel, "quantize", "", c.normal, 1);
+c.Map("0x9",c.i.hold		,c.channel, "c.ToggleReverse", "", c.scriptBinding, 0);
 c.Map("0x9",c.i.keylock		,c.channel, "keylock", "", c.normal, 1);
 c.Map("0x9",c.i.bank_p		,c.playlist, "SelectPrevPlaylist", "", c.normal, 0);
 c.Map("0x9",c.i.sgl_ctn		,c.playlist, "SelectNextPlaylist", "", c.normal, 0);
@@ -861,6 +864,24 @@ c.BackFwd = function(channel, control, value, status, group)
 		engine.setValue(group, "back", 1);
 	}
 };
+
+c.ToggleReverse = function(channel, control, value, status, group)
+{
+	var currentlyReversed=engine.getValue(group, "reverse");
+	if(value==c.keyPressed)
+	{
+		if(currentlyReversed==1)
+		{
+			engine.setValue(group, "reverse", 0);
+			c.LED(control, 0, group);
+		}
+		else
+		{
+			engine.setValue(group, "reverse", 1);
+			c.LED(control, 1, group);
+		}
+	}
+}
 
 c.PlayTrack = function(channel, control, value, status, group)
 {

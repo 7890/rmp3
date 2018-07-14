@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <MixxxMIDIPreset mixxxVersion="1.11.0+" schemaVersion="1">
-  <!-- created Mon Jul 09 2018 23:55:27 GMT+0200 (CEST) -->
-  <!-- script version 2.3 -->
+  <!-- created Sat Jul 14 2018 21:19:12 GMT+0200 (CEST) -->
+  <!-- script version 2.4 -->
   <info>
     <name>Reloop RMP-3</name>
     <author>Thomas Brand</author>
@@ -74,6 +74,50 @@
         <description/>
         <group>[Channel2]</group>
         <key>cue_set</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x06_0-->
+      <control>
+        <midino>0x06</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>reverse</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x06_1-->
+      <control>
+        <midino>0x06</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>reverse</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x45_0-->
+      <control>
+        <midino>0x45</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>reverseroll</key>
+        <options>
+          <normal/>
+        </options>
+      </control>
+      <!--_0x45_1-->
+      <control>
+        <midino>0x45</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>reverseroll</key>
         <options>
           <normal/>
         </options>
@@ -252,6 +296,28 @@
         <key>quantize</key>
         <options>
           <normal/>
+        </options>
+      </control>
+      <!--_0x1d_0-->
+      <control>
+        <midino>0x1d</midino>
+        <status>0x90</status>
+        <description/>
+        <group>[Channel1]</group>
+        <key>c.ToggleReverse</key>
+        <options>
+          <script-binding/>
+        </options>
+      </control>
+      <!--_0x1d_1-->
+      <control>
+        <midino>0x1d</midino>
+        <status>0x91</status>
+        <description/>
+        <group>[Channel2]</group>
+        <key>c.ToggleReverse</key>
+        <options>
+          <script-binding/>
         </options>
       </control>
       <!--_0x14_0-->

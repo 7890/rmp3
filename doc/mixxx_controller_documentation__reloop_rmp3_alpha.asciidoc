@@ -27,7 +27,7 @@ Home of this document:
 
 [NOTE]
 ============================================================================
-This documentation refers to `Reloop-RMP-3-scripts.js` version '2.3'.
+This documentation refers to `Reloop-RMP-3-scripts.js` version '2.4'.
 The bindings have been tested with Mixxx version '2.1.1' on Linux. 
 ============================================================================
 
@@ -313,7 +313,14 @@ Loop in/out, set cue point, set hotcues are affected by quantize (not limited to
 31) Hold
 ~~~~~~~~
 
-* (currently not used)
+* Toggle reverse on/off
+
+The button LED is connected to engine "reverse" status.
+
+[NOTE]
+============================================================================
+Play, cue play, hotcues are affected by reverse play (not limited to).
+============================================================================
 
 32) Echo
 ~~~~~~~~
@@ -342,10 +349,18 @@ Only one of 33), 34) and 35) can be active at a time (one LED is on, others off)
 
 * Temporarily change playback speed slightly
 
-36) 1/8, 1/4
-~~~~~~~~~~~~
+36) 1/8
+~~~~~~~
 
-* (currently not used)
+* Currently not assigned
+
+36) 1/4
+~~~~~~~
+
+* If rolling, on button down: temporarily play in reverse direction until button released
+* If not rolling, ignore
+
+* Holding shift 46): same function with slip mode, track continues playing forward at later position on button release
 
 36) 1/2
 ~~~~~~~
